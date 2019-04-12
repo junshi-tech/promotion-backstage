@@ -1,0 +1,10 @@
+<title>产品分类列表</title>
+
+<!--soon-->
+<div class="soon"></div>
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script>
+    if ($('.layui-show').find('.soon').html() == '') {
+        $('.layui-show').find('.soon').load('/admin/src/views/soon.html');
+    }
+</script>

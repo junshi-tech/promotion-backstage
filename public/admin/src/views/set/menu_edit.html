@@ -1,0 +1,151 @@
+<title>菜单编辑</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>设置</cite></a>
+    <a><cite>菜单编辑</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">菜单资料</div>
+        <div class="layui-card-body" pad15>
+          <div class="layui-form" lay-filter="filter-set-menu-edit">
+            <input type="hidden" name="menu_id">
+            <div class="layui-form-item">
+              <label class="layui-form-label">上级分类</label>
+              <div class="layui-input-inline">
+                <select name="pid">
+                </select>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>菜单名称</label>
+              <div class="layui-input-inline">
+                <input type="text" name="menu_name" placeholder="请输入" class="layui-input" lay-verify="required">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">权限规则</label>
+              <div class="layui-input-inline">
+                <input type="text" name="url" placeholder="请输入" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">模块/控制器/操作，如：admin/Menu/edit 驼峰写法</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">跳转地址</label>
+              <div class="layui-input-inline">
+                <input type="text" name="layui_jump" placeholder="请输入" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">视图的文件夹/文件，如：set/menu_edit</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">菜单图标</label>
+              <div class="layui-input-inline">
+                <input type="text" name="icon" placeholder="请输入" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">一级菜单，图标样式css类</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">菜单排序</label>
+              <div class="layui-input-inline">
+                <input type="number" name="sort_num" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">数字越小，越靠前</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">默认展开</label>
+              <div class="layui-input-block">
+                <input type="radio" name="is_extend" value="0" title="否">
+                <input type="radio" name="is_extend" value="1" title="是">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">打开方式</label>
+              <div class="layui-input-block">
+                <input type="radio" name="open_type" value="1" title="当前窗口">
+                <input type="radio" name="open_type" value="0" title="新窗口">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">是否显示</label>
+              <div class="layui-input-block">
+                <input type="radio" name="display" value="1" title="显示在左侧菜单">
+                <input type="radio" name="display" value="0" title="不显示，只做权限验证">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">用途描述</label>
+              <div class="layui-input-block">
+                <textarea name="describe" placeholder="请输入" class="layui-textarea"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="filter-set-menu-edit-submit">保存</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'table', 'view'], function () {
+        var $ = layui.$
+                , form = layui.form
+                , admin = layui.admin
+                , element = layui.element
+                , view = layui.view
+                , menu_id = layui.router().search.menu_id || 0
+                , filter = 'filter-set-menu-edit';
+
+        //渲染该模板下的动态表单
+        admin.req({
+            url: '/admin/menu/edit?menu_id=' + menu_id
+            , done: function (res) {
+                if (res.code) {
+                    var _html = '<option value="0">顶级</option>';
+                    _html += res.data.pid_list;
+                    $('.layui-form[lay-filter="' + filter + '"]').find('select[name="pid"]').html(_html);
+                    res.data.is_extend = res.data.is_extend !== undefined ? res.data.is_extend.toString() : '0';
+                    res.data.open_type = res.data.open_type !== undefined ? res.data.open_type.toString() : '1';
+                    res.data.display = res.data.display !== undefined ? res.data.display.toString() : '1';
+                    form.val(filter, res.data);
+                } else {
+                    layer.alert(res.msg, {icon: 2});
+                }
+            }
+        });
+
+        //提交
+        form.on('submit(' + filter + '-submit)', function (data) {
+            var field = data.field;
+            admin.req({
+                url: '/admin/menu/save'
+                , data: field
+                , done: function (res) {
+                    if (res.code) {
+                        layer.msg(res.msg, {shade: [0.5, '#000'], time: 1000}, function () {
+                            view('LAY-system-side-menu').render('set/menu_tpl').done(function () {
+                                element.render('nav', 'layadmin-system-side-menu');
+                            });
+                            location.hash = '/set/menu_edit/menu_id=' + res.data.id;
+                            layui.index.render();
+                        });
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>

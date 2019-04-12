@@ -1,0 +1,163 @@
+<title>轮播图编辑</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>Banner大图</cite></a>
+    <a><cite>添加|编辑</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">轮播图资料</div>
+        <div class="layui-card-body" pad15>
+          <div class="layui-form" lay-filter="filter-banner-edit">
+            <input type="hidden" name="banner_id">
+            <div class="layui-form-item">
+              <label class="layui-form-label">图片预览<br>(1000*315)</label>
+              <div class="layui-input-inline tpl-img-upload">
+                <img src="/static/img/holder.jpg" id="LAY-banner-edit-upload">
+                <input type="hidden" name="img_url">
+              </div>
+              <div class="layui-input-inline tpl-center-sm">
+                <div class="layui-btn-container">
+                  <a href="/static/img/holder.jpg" target="_blank" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i class="layui-icon layui-icon-search"></i>查看大图
+                  </a>
+                  <a class="layui-btn layui-btn-primary layui-btn-sm image-delete">
+                    <i class="layui-icon layui-icon-delete"></i>删除图片
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">banner位置</label>
+              <div class="layui-input-inline">
+                <select name="location">
+                </select>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">图片名称</label>
+              <div class="layui-input-inline">
+                <input type="text" name="img_name" class="layui-input">
+              </div>
+              <div class="layui-input-inline">
+                <div id="LAY-banner-edit-color"></div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">跳转链接</label>
+              <div class="layui-input-inline">
+                <input type="text" name="link" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">排序</label>
+              <div class="layui-input-inline">
+                <input type="number" name="sort_num" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">数字越小，越靠前</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">状态</label>
+              <div class="layui-input-block">
+                <input type="radio" name="state" value="1" title="启用">
+                <input type="radio" name="state" value="0" title="禁用">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">内容描述</label>
+              <div class="layui-input-block">
+                <!-- 加载编辑器的容器 -->
+                <script id="LAY-banner-edit-describe" name="describe" type="text/html"></script>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="filter-banner-edit-submit">保存</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div type="text/html" template>
+  <script type="text/javascript" src="/static/plugins/qiniu_ueditor_1.4.3/ueditor.config.js"></script>
+  <script type="text/javascript" src="/static/plugins/qiniu_ueditor_1.4.3/ueditor.all.js"></script>
+  <script type="text/javascript" src="/static/js/plupload.full.min.js"></script>
+  <script type="text/javascript" src="/static/js/qiniu.min.js"></script>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'uploadQiNiu'], function () {
+        var $ = layui.$
+                , form = layui.form
+                , admin = layui.admin
+                , banner_id = layui.router().search.banner_id || 0
+                , filter = 'filter-banner-edit'
+                , editor = null;
+
+        //渲染该模板下的动态表单
+        admin.req({
+            url: '/admin/banner/edit?banner_id=' + banner_id
+            , done: function (res) {
+                if (res.code) {
+                    var dom = $('.layui-form[lay-filter="'+filter+'"]');
+                    var _html = '<option value="">请选择</option>';
+                    $.each(res.data.locationList, function (index, item) {
+                        _html += '<option value="' + item.basic_id + '">' + item.basic_name + '</option>';
+                    });
+                    dom.find('select[name="location"]').html(_html);
+                    dom.find('.tpl-img-upload').setImgVal(res.data.img_url);
+                    res.data.state = res.data.state ? res.data.state.toString() : '1';
+                    form.val(filter, res.data);
+
+                } else {
+                    layer.alert(res.msg, {icon: 2});
+                }
+
+                //上传图片
+//                $('#LAY-banner-edit-upload').imgUpload();
+                //删除图片
+                $('.image-delete').imgDel(banner_id, 'basic_banner');
+                //颜色选择器
+                $('#LAY-banner-edit-color').colorPicker();
+
+                //实例化编辑器*
+                editor = UE.getEditor('LAY-banner-edit-describe');
+            }
+        });
+
+        //提交
+        form.on('submit('+filter+'-submit)', function (data) {
+            var field = data.field;
+            field.img_name_style = $("#LAY-banner-edit-color").closest('.layui-form-item').find('input[type="text"]').attr('style');
+            field.describe = editor.getContent();
+            admin.req({
+                url: '/admin/banner/save'
+                , data: field
+                , done: function (res) {
+                    if (res.code) {
+                        layer.msg(res.msg, {shade: [0.5, '#000'], time: 1000}, function () {
+                            location.hash = '/banner/edit/banner_id=' + res.data.id;
+                            layui.index.render();
+                        });
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+
+
+</script>

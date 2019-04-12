@@ -1,0 +1,182 @@
+<script type="text/html" template>
+  <link rel="stylesheet" href="{{ layui.setter.base }}style/login.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+  <div class="layadmin-user-login-main">
+    <div class="layadmin-user-login-box layadmin-user-login-header">
+      <h2>东篱下</h2>
+      <p>后台管理系统</p>
+    </div>
+    <form class="layadmin-user-login-box layadmin-user-login-body layui-form" lay-filter="filter-alone-login">
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-username"></label>
+        <input type="text" name="keyword" lay-verify="required" lay-verType="tips" placeholder="用户名" class="layui-input" autocomplete="off">
+      </div>
+      <div class="layui-form-item">
+        <label class="layadmin-user-login-icon layui-icon layui-icon-password"></label>
+        <input type="password" name="user_pwd" lay-verify="required" lay-verType="tips" placeholder="密码" class="layui-input" autocomplete="off">
+      </div>
+      <div class="layui-form-item" style="display: none;">
+        <div class="layui-row">
+          <div class="layui-col-xs7">
+            <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"></label>
+            <input type="text" name="vercode" lay-verType="tips" placeholder="图形验证码" class="layui-input">
+          </div>
+          <div class="layui-col-xs5">
+            <div style="margin-left: 10px;">
+              <img src="/admin/login/updateCaptcha" class="layadmin-user-login-codeimg">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-form-item" style="margin-bottom: 20px;">
+        <input type="checkbox" name="remember" lay-skin="primary" title="记住">
+        <a lay-href="/user/forget" class="layadmin-user-jump-change layadmin-link" style="margin-top: 7px;">忘记密码？</a>
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-alone-login-submit">登 录</button>
+      </div>
+
+      <div class="layui-trans layui-form-item layadmin-user-login-other">
+        <!--<label>快捷方式</label>-->
+        <!--<a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>-->
+        <a href="/admin/login/weChat.html?back_url=http://www.ingcu.com/admin/index/index/#"><i class="layui-icon layui-icon-login-wechat"></i></a>
+
+        <!--<a lay-href="/user/reg" class="layadmin-user-jump-change layadmin-link">注册帐号</a>-->
+        <a href="javascript:;" class="layadmin-user-jump-change layadmin-link login-quick" style="color: red;">游客免登陆</a>
+      </div>
+    </form>
+
+  </div>
+
+  <div class="layui-trans layadmin-user-login-footer">
+
+    <p>© 2018 <a href="http://www.ingbu.com/" target="_blank">www.ingbu.com</a></p>
+    <!--<p>-->
+    <!--<span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>-->
+    <!--<span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>-->
+    <!--<span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>-->
+    <!--</p>-->
+  </div>
+
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'user'], function () {
+        var $ = layui.$
+                , setter = layui.setter
+                , admin = layui.admin
+                , form = layui.form
+                , redirect = layui.router().search.redirect;
+
+        //若存在本地缓存，则跳转到首页
+        if (layui.data(setter.tableName).access_token) {
+            location.hash = '/';
+        }
+
+        //微信登录，链接中有token，执行自动登录
+        var token = getUrlParam('token');
+        if (token) {
+            $.ajax({
+                url: '/admin/login/loginByToken'
+                , type: 'POST'
+                , data: {'token':token}
+                , success: function (res) {
+                    if (res.code) {
+                        //请求成功后，写入 access_token及用户数据
+                        setLocalData(res);
+                        window.location.href = '/admin/index';//登入成功跳转
+                    } else {
+                        updateCaptcha();
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            })
+        }
+        form.render(null, 'filter-alone-login');
+
+        //点击更新验证码
+        $('.layadmin-user-login-codeimg').on('click', function () {
+            updateCaptcha();
+        });
+
+        //判断是否展示验证码
+        if (layui.data(setter.tableName).error_num) {
+            showVercode(layui.data(setter.tableName).error_num);
+        }
+
+        //提交
+        form.on('submit(LAY-alone-login-submit)', function (obj) {
+            //请求登入接口
+            $.ajax({
+                url: '/admin/login/login'
+                , type: 'POST'
+                , data: obj.field
+                , success: function (res) {
+                    showVercode(res.data.error_num);
+                    if (res.code) {
+                        //请求成功后，写入 access_token及用户数据
+                        setLocalData(res);
+                        location.hash = redirect ? decodeURIComponent(redirect) : '/';//登入成功跳转
+                    } else {
+                        updateCaptcha();
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+            return false;
+        });
+
+        //游客免登录
+        $('.login-quick').click(function () {
+            $.ajax({
+                url: '/admin/login/login'
+                , type: 'POST'
+                , data: {'keyword': '游侠', 'user_pwd': '11CB8BAE9'}
+                , success: function (res) {
+                    showVercode(res.data.error_num);
+                    if (res.code) {
+                        //请求成功后，写入 access_token及用户数据
+                        setLocalData(res);
+                        location.hash = redirect ? decodeURIComponent(redirect) : '/';//登入成功跳转
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+        });
+
+        //存储本地数据
+        function setLocalData(res) {
+            layui.data(setter.tableName, {key: setter.request.tokenName, value: res.data.token});
+            layui.data(setter.tableName, {key: 'user_name', value: res.data.user_name});
+            layui.data(setter.tableName, {key: 'user_id', value: res.data.user_id});
+        }
+
+        //更新验证码
+        function updateCaptcha() {
+            $('.layadmin-user-login-codeimg').attr('src', "/admin/login/updateCaptcha" + '?t=' + new Date().getTime());
+        }
+
+        //错误2次以上，需要填写验证码
+        function showVercode(error_num) {
+            layui.data(setter.tableName, {key: 'error_num', value: error_num});
+            if (error_num > 2) {
+                $('.layadmin-user-login-codeimg').closest('.layui-form-item').css('display', 'block');
+                $('.layadmin-user-login-codeimg').closest('.layui-form-item').find('.layui-input').attr('lay-verify', "required");
+            }
+        }
+
+
+        //获取当前链接参数
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        }
+    });
+
+</script>

@@ -1,0 +1,237 @@
+
+<title>消息中心</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>消息中心</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid" id="LAY-message-list">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <script template type="text/html" lay-url="/admin/message/getNewsCount?type=list">
+          <li class="layui-this">全部消息{{ d.data.all_html }}</li>
+          <li>公告{{ d.data.public_html }}</li>
+          <li>私信{{ d.data.private_html }}</li>
+        </script>
+
+      </ul>
+      <div class="layui-tab-content">
+
+        <div class="layui-tab-item layui-show">
+          <div class="LAY-message-list-btns" style="margin-bottom: 10px;">
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="del">删除</button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="ready">标记已读</button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="readyAll">全部已读</button>
+          </div>
+
+          <table id="LAY-message-list-all" lay-filter="filter-message-list-all"></table>
+        </div>
+        <div class="layui-tab-item">
+
+          <div class="LAY-message-list-btns" style="margin-bottom: 10px;">
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="notice" data-events="del">删除</button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="notice" data-events="ready">标记已读</button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="notice" data-events="readyAll">全部已读</button>
+          </div>
+
+          <table id="LAY-message-list-notice" lay-filter="filter-message-list-notice"></table>
+        </div>
+        <div class="layui-tab-item">
+
+          <div class="LAY-message-list-btns" style="margin-bottom: 10px;">
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="direct" data-events="del">删除</button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="direct" data-events="ready">标记已读</button>
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-type="direct" data-events="readyAll">全部已读</button>
+          </div>
+
+          <table id="LAY-message-list-direct" lay-filter="filter-message-list-direct"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'table', 'util'], function(){
+        var $ = layui.$
+            , admin = layui.admin
+            , admin_set = layui.setter.admin_set
+            , table = layui.table
+            , element = layui.element;
+
+        var DISABLED = 'layui-btn-disabled'
+
+            //区分各选项卡中的表格
+            ,tabs = {
+                all: {
+                    text: '全部消息'
+                    ,id: 'LAY-message-list-all'
+                }
+                ,notice: {
+                    text: '公告'
+                    ,id: 'LAY-message-list-notice'
+                }
+                ,direct: {
+                    text: '私信'
+                    ,id: 'LAY-message-list-direct'
+                }
+            };
+
+        //标题模板
+        var tplTitle = function(d){
+            var dot = d.is_read == 1 ? '' : '<span class="layui-badge-dot" style="margin-left: -10px;"></span>&nbsp;';
+            var text = d.is_read == 1 ? d.title : '<strong>'+ d.title +'</strong>';
+            return dot+'<a lay-href="message/detail/list_id='+ d.list_id +'">'+ text +'</a>';
+        };
+
+        //内容模板
+        var tplContent = function(d){
+            var text = d.is_read == 1 ? d.content : '<strong>'+ d.content +'</strong>';
+            return '<a lay-href="message/detail/list_id='+ d.list_id +'">'+ text +'</a>';
+        };
+
+        //全部消息
+        table.render({
+            elem: '#LAY-message-list-all'
+            ,url: admin_set.domain+'/admin/message/getData'
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{title:'标题', minWidth: 150, templet: tplTitle}
+                ,{title:'内容', minWidth: 350, width: '70%', templet: tplContent}
+                ,{field: 'create_time', title: '时间', width: 170, templet: '<div>{{ layui.util.timeAgo(d.create_time) }}</div>'}
+            ]]
+            , page: true
+            , limit: admin_set.table_limit
+            , limits: admin_set.table_limits
+            , where: {
+                access_token: layui.data(layui.setter.tableName).access_token
+            }
+            , text: { none: '暂无数据'}
+        });
+
+        //公告
+        table.render({
+            elem: '#LAY-message-list-notice'
+            ,url: admin_set.domain+'/admin/message/getData?type=1'
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{title:'标题', minWidth: 150, templet: tplTitle}
+                ,{title:'内容', minWidth: 350, width: '70%', templet: tplContent}
+                ,{field: 'create_time', title: '时间', width: 170, templet: '<div>{{ layui.util.timeAgo(d.create_time) }}</div>'}
+            ]]
+            , page: true
+            , limit: admin_set.table_limit
+            , limits: admin_set.table_limits
+            , where: {
+                access_token: layui.data(layui.setter.tableName).access_token
+            }
+            , text: { none: '暂无数据'}
+        });
+
+        //私信
+        table.render({
+            elem: '#LAY-message-list-direct'
+            ,url: admin_set.domain+'/admin/message/getData?type=2'
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{title:'标题', minWidth: 150, templet: tplTitle}
+                ,{title:'内容', minWidth: 350, width: '70%', templet: tplContent}
+                ,{field: 'create_time', title: '时间', width: 170, templet: '<div>{{ layui.util.timeAgo(d.create_time) }}</div>'}
+            ]]
+            , page: true
+            , limit: admin_set.table_limit
+            , limits: admin_set.table_limits
+            , where: {
+                access_token: layui.data(layui.setter.tableName).access_token
+            }
+            , text: { none: '暂无数据'}
+        });
+
+        //事件处理
+        var events = {
+            del: function(othis, type){
+                var thisTabs = tabs[type]
+                    ,checkStatus = table.checkStatus(thisTabs.id)
+                    ,checkData = checkStatus.data; //获得选中的数据
+                if(checkData.length === 0) return layer.msg('未选中数据');
+
+                //获取当前选中的id，数组
+                var id_list = [];
+                $.each(checkData, function (key, val) {
+                    id_list[key] = val.list_id;
+                });
+
+                layer.confirm('确定删除选中的数据吗？', function(index){
+                    admin.req({
+                        url : '/admin/message_list/delete'
+                        ,data : {id:id_list}
+                        ,done: function (res) {
+                            layer.close(index);
+                            if (res.code) {
+                                table.reload(thisTabs.id); //刷新表格
+                                layer.msg(res.msg);
+                            } else {
+                                layer.alert(res.msg, {icon:2});
+                            }
+                        }
+                    });
+                });
+            }
+            ,ready: function(othis, type){
+                var thisTabs = tabs[type]
+                    ,checkStatus = table.checkStatus(thisTabs.id)
+                    ,checkData = checkStatus.data; //获得选中的数据
+                if(checkData.length === 0) return layer.msg('未选中数据');
+
+                //获取当前选中的id，数组
+                var id_list = [];
+                $.each(checkData, function (key, val) {
+                    id_list[key] = val.list_id;
+                });
+
+                admin.req({
+                    url: '/admin/message_list/setRead'
+                    ,data: {id:id_list}
+                    ,done: function (res) {
+                        if (res.code) {
+                            table.reload(thisTabs.id); //刷新表格
+                            layer.msg('成功标记已读');
+                        } else {
+                            layer.alert(res.msg, {icon:2});
+                        }
+                    }
+                });
+            }
+            ,readyAll: function(othis, type){
+                var thisTabs = tabs[type]; //获得选中的数据
+
+                layer.confirm('全部标记为已读吗？', function(index){
+                    admin.req({
+                        url: '/admin/message_list/setRead'
+                        ,data: {}
+                        ,done: function (res) {
+                            layer.close(index);
+                            if (res.code) {
+                                table.reload(thisTabs.id); //刷新表格
+                                layer.msg(thisTabs.text + '：全部已读');
+                            } else {
+                                layer.alert(res.msg, {icon:2});
+                            }
+                        }
+                    });
+                });
+            }
+        };
+
+        $('.LAY-message-list-btns .layui-btn').on('click', function(){
+            var othis = $(this)
+                ,thisEvent = othis.data('events')
+                ,type = othis.data('type');
+            events[thisEvent] && events[thisEvent].call(this, othis, type);
+        });
+    });
+</script>

@@ -1,0 +1,124 @@
+<title>权限组编辑</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>后台管理员</cite></a>
+    <a><cite>权限组添加|编辑</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-body" pad15>
+          <div class="layui-form" lay-filter="filter-admin-role-edit">
+            <input type="hidden" name="role_id">
+            <div class="layui-col-xs12 layui-col-sm4">
+              <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red;">*&nbsp;</span>名称：</label>
+                <div class="layui-input-block">
+                  <input type="text" name="role_name" placeholder="请输入" class="layui-input" lay-verify="required">
+                </div>
+              </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm8">
+              <div class="layui-form-item">
+                <label class="layui-form-label">用途描述：</label>
+                <div class="layui-input-block">
+                  <input type="text" name="describe" placeholder="请输入" class="layui-input">
+                </div>
+              </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm12">
+              <!--菜单列表-->
+              <table id="LAY-admin-role-edit-table" lay-filter="filter-admin-role-edit-table"></table>
+            </div>
+            <hr>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <div class="layui-footer">
+                  <button class="layui-btn" lay-submit="" lay-filter="filter-admin-role-edit-submit">保存</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    layui.use(['admin', 'form', 'table'], function () {
+        var $ = layui.$
+                , form = layui.form
+                , table = layui.table
+                , admin_set = layui.setter.admin_set
+                , admin = layui.admin
+                , role_id = layui.router().search.role_id || 0
+                , filter = 'filter-admin-role-edit';
+
+        //渲染该模板下的动态表单
+        admin.req({
+            url: '/admin/admin_role/edit?role_id=' + role_id
+            , done: function (res) {
+                if (res.code) {
+                    form.val(filter, res.data);
+                } else {
+                    layer.alert(res.msg, {icon: 2});
+                }
+            }
+        });
+
+        //数据列表
+        table.render({
+            elem: '#LAY-admin-role-edit-table'
+            , url: admin_set.domain + '/admin/admin_role/getMenuList?role_id=' + role_id
+            , cols: [[
+                {type: 'checkbox'}
+                , {field: 'menu_name', title: '菜单名称', minWidth: 100}
+                , {field: 'pid_text', title: '上级菜单', minWidth: 80}
+                , {field: 'describe', title: '描述', minWidth: 200}
+            ]]
+            , where: {
+                access_token: layui.data(layui.setter.tableName).access_token
+            }
+            , text: { none: '暂无数据'}
+        });
+
+        //提交
+        form.on('submit(' + filter + '-submit)', function (data) {
+            //获取当前选中的菜单id，逗号隔开
+            var checkList = table.checkStatus('LAY-admin-role-edit-table');
+            var id_list = [];
+            if (checkList.data.length === 0) {
+                return layer.msg('请至少选择一个菜单');
+            }
+            $.each(checkList.data, function (key, val) {
+                id_list[key] = val.menu_id;
+            });
+
+            var field = data.field;
+            field.auth = id_list.join(',');
+            admin.req({
+                url: '/admin/admin_role/save'
+                , data: field
+                , done: function (res) {
+                    if (res.code) {
+                        layer.msg(res.msg, {shade: [0.5, '#000'], time: 1000}, function () {
+                            location.hash = '/admin/role_edit/role_id=' + res.data.id;
+                            layui.index.render();
+                        });
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>

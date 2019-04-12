@@ -1,0 +1,182 @@
+<title>网站设置</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>系统设置</cite></a>
+    <a><cite>网站设置</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid" id="LAY-set-config">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">网站信息</li>
+        <li>系统设置</li>
+        <li>邮件服务</li>
+      </ul>
+      <div class="layui-tab-content">
+        <script type="text/html" template lay-url="/admin/system/getData" lay-done="layui.data.done(d);">
+          <div class="layui-tab-item layui-show">
+            <form class="layui-form CLA-set-config-form" lay-filter="filter-set-config">
+              <div class="layui-form-item">
+                <label class="layui-form-label">浏览器标签Logo</label>
+                <div class="layui-input-inline tpl-img-upload">
+                  <img src="{{ d.data.web_browser_logo || '' }}" id="LAY-set-config-upload-bro">
+                  <input type="hidden" name="sys[web_browser_logo][sys_value]" value="{{ d.data.web_browser_logo || '' }}" data-id="sys_code" data-table="system_config">
+                </div>
+                <div class="layui-form-mid layui-word-aux">(尺寸50*50)</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">网站Logo</label>
+                <div class="layui-input-inline tpl-img-upload">
+                  <img src="{{ d.data.web_logo || '' }}" id="LAY-set-config-upload-web">
+                  <input type="hidden" name="sys[web_logo][sys_value]" value="{{ d.data.web_logo || '' }}" data-id="sys_code" data-table="system_config">
+                </div>
+                <div class="layui-form-mid layui-word-aux">(尺寸228*66)</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">网站名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[web_name][sys_value]" value="{{ d.data.web_name || '' }}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">联系电话</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[web_tel][sys_value]" value="{{ d.data.web_tel || '' }}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">公司地址</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[web_address][sys_value]" value="{{ d.data.web_address || '' }}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">网站作者</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[web_author][sys_value]" value="{{ d.data.web_author || '' }}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">用于seo搜索优化</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">网站关键词</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[web_keywords][sys_value]" value="{{ d.data.web_keywords || '' }}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">用于seo搜索优化</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">网站描述<br>（用于seo搜索优化）</label>
+                <div class="layui-input-block">
+                  <textarea name="sys[web_describe][sys_value]" class="layui-textarea">{{ d.data.web_describe || '' }}</textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="layui-tab-item">
+            <form class="layui-form CLA-set-config-form" lay-filter="filter-set-config">
+              <div class="layui-form-item">
+                <label class="layui-form-label">缓存有效期</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[sys_cache_expire][sys_value]" value="{{ d.data.sys_cache_expire || '' }}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">单位(天)</div>
+              </div>
+            </form>
+          </div>
+          <div class="layui-tab-item">
+            <form class="layui-form CLA-set-config-form" lay-filter="filter-set-config">
+              <div class="layui-form-item">
+                <label class="layui-form-label">SMTP<br>服务器</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[email_smtp_host][sys_value]" value="{{ d.data.email_smtp_host || '' }}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">如：smtp.163.com、smtp.126.com、smtp.qq.com</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">SMTP<br>端口号</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[email_smtp_port][sys_value]" value="{{ d.data.email_smtp_port || '' }}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">一般为 25 或 465</div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">SMTP<br>授权密码</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[email_smtp_pwd][sys_value]" value="{{ d.data.email_smtp_pwd || '' }}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">发件人邮箱</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[email_send][sys_value]" value="{{ d.data.email_send || '' }}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">发件人昵称</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="sys[email_nick][sys_value]" value="{{ d.data.email_nick || '' }}" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">是否启用</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="sys[email_enable][sys_value]" value="1" title="启用" {{ d.data.email_enable== '1' ? 'checked' : '' }}>
+                  <input type="radio" name="sys[email_enable][sys_value]" value="0" title="禁用" {{ d.data.email_enable== '0' ? 'checked' : '' }}>
+                </div>
+              </div>
+            </form>
+          </div>
+        </script>
+      </div>
+      <br>
+      <div class="layui-form-item">
+        <div class="layui-footer">
+          <button class="layui-btn" lay-submit="" lay-filter="filter-set-config-submit">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.data.done = function (d) {
+        layui.use(['admin', 'form'], function () {
+            var $ = layui.$
+                    , admin = layui.admin
+                    , form = layui.form
+                    , filter = 'filter-set-config';
+
+            //渲染该模板下的动态表单
+            form.render(null, filter);
+
+            //上传图片
+            $('#LAY-set-config-upload-bro').imgUpload();
+            $('#LAY-set-config-upload-web').imgUpload();
+
+            //提交
+            form.on('submit(' + filter + '-submit)', function () {
+                var data = $('.CLA-set-config-form').serializeObject();
+                admin.req({
+                    url: '/admin/system/save'
+                    , data: data
+                    , done: function (res) {
+                        if (res.code) {
+                            layer.msg(res.msg, {shade: [0.5, '#000'], time: 1000}, function () {
+                                layui.index.render();
+                            });
+                        } else {
+                            layer.alert(res.msg, {icon: 2});
+                        }
+                    }
+                });
+                return false;
+            });
+
+        });
+    };
+
+</script>

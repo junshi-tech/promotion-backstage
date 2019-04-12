@@ -1,0 +1,63 @@
+<title>爱心基金</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>文章管理</cite></a>
+    <a><cite>爱心基金</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+
+    <form class="layui-form layui-card-header layuiadmin-card-header-auto layui-form-pane" lay-filter="filter-article-fund">
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">上级栏目</label>
+          <div class="layui-input-inline">
+            <script type="text/html" template lay-url="/admin/article/getCatListOptionTree" lay-done="layui.data.done(d);">
+              <select name="cat_id">
+                <option value="">请选择</option>
+                {{ d.data }}
+              </select>
+            </script>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">标题</label>
+          <div class="layui-input-inline">
+            <input type="text" name="title" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline layui-btn-group" id="LAY-article-fund-btn">
+          <button class="layui-btn layuiadmin-btn-useradmin layui-btn-normal" lay-submit lay-filter="filter-article-fund-search">搜索</button>
+          <button type="button" class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
+          <button type="button" class="layui-btn layuiadmin-btn-useradmin layui-btn-danger" data-type="batchdel">批量删除</button>
+          <button type="button" class="layui-btn layuiadmin-btn-useradmin layui-btn-warm" data-type="batch_">导出数据</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="layui-card-body">
+      <table id="LAY-article-fund-table" lay-filter="filter-article-fund-table"></table>
+      <!--操作列-->
+      <script type="text/html" id="LAY-article-fund-table-option">
+        <div class="layui-btn-group">
+          <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </div>
+      </script>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use('article', layui.factory('article'));
+    layui.data.done = function (d) {
+        layui.use(['form'], function () {
+            var form = layui.form;
+            form.render('select', 'filter-article-fund'); //渲染该模板下的动态表单
+        });
+    };
+</script>

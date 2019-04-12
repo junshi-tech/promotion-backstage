@@ -1,0 +1,49 @@
+<title>基础资料列表</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>系统设置</cite></a>
+    <a><cite>基础资料列表</cite></a>
+  </div>
+</div>
+
+<style>
+  #LAY-set-basic-list .layui-btn .layui-icon{margin: 0 auto;}
+</style>
+
+<div class="layui-fluid" id="LAY-set-basic-list">
+  <div class="layui-card">
+
+    <form class="layui-form layui-card-header layuiadmin-card-header-auto layui-form-pane" lay-filter="filter-set-basic-list">
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">资料名称</label>
+          <div class="layui-input-inline">
+            <input type="text" name="basic_name" placeholder="请输入" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-inline layui-btn-group" id="LAY-set-basic-list-btn">
+          <button class="layui-btn layuiadmin-btn-useradmin layui-btn-normal" lay-submit lay-filter="filter-set-basic-list-search">搜索</button>
+          <button type="button" class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
+          <button type="button" class="layui-btn layuiadmin-btn-useradmin layui-btn-danger" data-type="batchdel">批量删除</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="layui-card-body">
+      <table id="LAY-set-basic-list-table" lay-filter="filter-set-basic-list-table"></table>
+      <!--操作列-->
+      <script type="text/html" id="LAY-set-basic-list-table-option">
+        <div class="layui-btn-group">
+          <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </div>
+      </script>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use('basic_info', layui.factory('basic_info'));
+</script>
