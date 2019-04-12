@@ -1,0 +1,158 @@
+<title>栏目编辑</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>文章管理</cite></a>
+    <a><cite>栏目添加|编辑</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">栏目资料</div>
+        <div class="layui-card-body" pad15>
+          <div class="layui-form" lay-filter="filter-article-cat-edit">
+            <input type="hidden" name="cat_id">
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属板块</label>
+              <div class="layui-input-block" id="LAY-article-cat-edit-cat-type">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">上级栏目</label>
+              <div class="layui-input-block">
+                <select name="pid">
+                </select>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">栏目名称</label>
+              <div class="layui-input-block">
+                <input type="text" name="cat_name" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">显示位置</label>
+              <div class="layui-input-block" id="LAY-article-cat-edit-location">
+              </div>
+              <div class="layui-word-aux">前端页面显示位置，如：顶部banner图内、左侧栏位、右侧栏位</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">栏目排序</label>
+              <div class="layui-input-inline">
+                <input type="number" name="sort_num" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">数字越小，越靠前</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">栏目状态</label>
+              <div class="layui-input-block">
+                <input type="radio" name="state" value="1" title="启用">
+                <input type="radio" name="state" value="0" title="禁用">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="filter-article-cat-edit-submit">保存</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'], function () {
+        var $ = layui.$
+                , form = layui.form
+                , admin = layui.admin
+                , cat_id = layui.router().search.cat_id || 0
+                , filter = 'filter-article-cat-edit'
+                , dom = $('.layui-form[lay-filter="' + filter + '"]')
+                , cat_type = null//初始化当前版块值;
+        ;
+
+        //渲染该模板下的动态表单
+        admin.req({
+            url: '/admin/article_cat/edit?cat_id=' + cat_id
+            , done: function (res) {
+                if (res.code) {
+                    //板块
+                    var _html = '';
+                    $.each(res.data.cat_type_list, function (index, item) {
+                        _html += '<input type="radio" name="cat_type" lay-filter="changeCatType" value="' + item.basic_id + '" title="' + item.basic_name + '">';
+                    });
+                    $('#LAY-article-cat-edit-cat-type').html(_html);
+
+                    //上级栏目
+                    var _html = '<option value="0">顶级</option>';
+                    _html += res.data.cat_list;
+                    dom.find('select[name="pid"]').html(_html);
+
+                    //显示位置
+                    var _html = '';
+                    $.each(res.data.location_list, function (index, item) {
+                        _html += '<input type="radio" name="location" value="' + item.basic_id + '" title="' + item.basic_name + '">';
+                    });
+                    $('#LAY-article-cat-edit-location').html(_html);
+
+                    res.data.cat_type = res.data.cat_type ? res.data.cat_type.toString() : '';
+                    res.data.location = res.data.location ? res.data.location.toString() : '';
+                    res.data.state = res.data.state ? res.data.state.toString() : '1';
+                    form.val(filter, res.data);
+                    cat_type = res.data.cat_type;
+                } else {
+                    layer.alert(res.msg, {icon: 2});
+                }
+            }
+        });
+
+        //更换板块获取对应的栏目，radio单选框被点击时触发
+        form.on('radio(changeCatType)', function (data) {
+            if (data.value == cat_type) {
+                return false;//值未变更，则终止
+            }
+            cat_type = dom.find('input:radio[name="cat_type"]:checked').val();//赋值变更后的值
+            var index = layer.load(2, {time: 10 * 1000});
+            admin.req({
+                url: '/admin/article/getCatListOptionTree'
+                , data: {cat_type: data.value}
+                , done: function (res) {
+                    layer.close(index);
+                    if (res.code) {
+                        dom.find('select[name="pid"]').html('<option value="0">顶级</option>' + res.data.option_tree);
+                        form.render('select');
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+        });
+
+        //提交
+        form.on('submit(' + filter + '-submit)', function (data) {
+            var field = data.field;
+            admin.req({
+                url: '/admin/article_cat/save'
+                , data: field
+                , done: function (res) {
+                    if (res.code) {
+                        layer.msg(res.msg, {shade: [0.5, '#000'], time: 1000}, function () {
+                            location.hash = '/article/cat_edit/cat_id=' + res.data.id;
+                            layui.index.render();
+                        });
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+
+</script>

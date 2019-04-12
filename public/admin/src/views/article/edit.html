@@ -1,0 +1,256 @@
+<title>文章编辑</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>文章管理</cite></a>
+    <a><cite>添加|编辑</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">文章资料</div>
+        <div class="layui-card-body" pad15>
+          <div class="layui-form" lay-filter="filter-article-edit">
+            <input type="hidden" name="art_id">
+            <div class="layui-form-item">
+              <label class="layui-form-label">缩略图<br>(310*310)</label>
+              <div class="layui-input-inline tpl-img-upload" id="LAY-article-edit-upload">
+                <img src="/static/img/holder.jpg">
+                <input type="hidden" name="img_url">
+              </div>
+              <div class="layui-input-inline tpl-center-sm">
+                <div class="layui-btn-container">
+                  <a href="/static/img/holder.jpg" target="_blank" class="layui-btn layui-btn-primary layui-btn-sm">
+                    <i class="layui-icon layui-icon-search"></i>查看大图
+                  </a>
+                  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm image-delete">
+                    <i class="layui-icon layui-icon-delete"></i>删除图片
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属板块</label>
+              <div class="layui-input-block" id="LAY-article-edit-cat-type">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">文章栏目</label>
+              <div class="layui-input-block">
+                <select name="cat_id" lay-verify="required">
+                </select>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">文章标题</label>
+              <div class="layui-input-block">
+                <input type="text" name="title" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">副标题</label>
+              <div class="layui-input-block">
+                <input type="text" name="title_sub" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">链接</label>
+              <div class="layui-input-block">
+                <input type="text" name="link" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">地点</label>
+              <div class="layui-input-block">
+                <input type="text" name="address" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">关键字</label>
+              <div class="layui-input-block">
+                <input type="text" name="keywords" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">文章作者</label>
+              <div class="layui-input-block">
+                <input type="text" name="author" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">文章排序</label>
+              <div class="layui-input-block">
+                <input type="number" name="sort_num" placeholder="请输入" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">推荐等级</label>
+              <div class="layui-input-block">
+                <input type="radio" name="level" value="0" title="未审核">
+                <input type="radio" name="level" value="1" title="正常">
+                <input type="radio" name="level" value="2" title="推荐">
+                <input type="radio" name="level" value="3" title="头条">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">发布状态</label>
+              <div class="layui-input-block">
+                <input type="radio" name="state" value="0" title="下架">
+                <input type="radio" name="state" value="1" title="发布">
+                <input type="radio" name="state" value="2" title="定时">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">定时时间</label>
+              <div class="layui-input-block">
+                <input type="text" name="public_time" class='layui-input article-list-date'>
+                <div class="layui-word-aux">若发布状态为“定时”，则按该时间定时发布</div>
+              </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">内容简介</label>
+              <div class="layui-input-block">
+                <textarea name="describe" placeholder="请输入" class="layui-textarea"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">内容详情</label>
+              <div class="layui-input-block">
+                <!-- 加载编辑器的容器 -->
+                <script id="LAY-article-edit-content" name="content" type="text/html"></script>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="filter-article-edit-submit">保存</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="/static/plugins/qiniu_ueditor_1.4.3/ueditor.config.js"></script>
+<script type="text/javascript" src="/static/plugins/qiniu_ueditor_1.4.3/ueditor.all.js"></script>
+<script type="text/javascript" src="/static/js/plupload.full.min.js"></script>
+<script type="text/javascript" src="/static/js/qiniu.min.js"></script>
+
+<script>
+    layui.use(['admin', 'form', 'laydate', 'qiNiu'], function () {
+        var $ = layui.$
+                , form = layui.form
+                , admin = layui.admin
+                , art_id = layui.router().search.art_id || 0
+                , laydate = layui.laydate
+                , qiNiu = layui.qiNiu
+                , filter = 'filter-article-edit'
+                , dom = $('.layui-form[lay-filter="' + filter + '"]')
+                , editor = null
+                , cat_type = null;//初始化当前版块值;
+
+        //实例化七牛云上传插件
+        qiNiu.upload('LAY-article-edit-upload');
+
+        //渲染该模板下的动态表单
+        admin.req({
+            url: '/admin/article/edit?art_id=' + art_id
+            , done: function (res) {
+                if (res.code) {
+                    //图片
+                    if (res.data.img_url !== undefined && res.data.img_url.length > 0) {
+                        dom.find('.tpl-img-upload').setImgVal(res.data.img_url);
+                    } else {
+                        dom.find('img').attr('src', '/static/img/holder.jpg');//图片链接
+                    }
+
+                    //板块
+                    var _html = '';
+                    $.each(res.data.cat_type_list, function (index, item) {
+                        _html += '<input type="radio" name="cat_type" lay-filter="changeCatType" value="' + item.basic_id + '" title="' + item.basic_name + '">';
+                    });
+                    $('#LAY-article-edit-cat-type').html(_html);
+                    //栏目
+                    dom.find('select[name="cat_id"]').html('<option value="">请选择</option>' + res.data.cat_list);
+                    //单选
+                    res.data.cat_type = res.data.cat_type ? res.data.cat_type.toString() : '';
+                    res.data.level = res.data.level ? res.data.level.toString() : '1';
+                    res.data.state = res.data.state ? res.data.state.toString() : '';
+                    form.val(filter, res.data);
+
+                    cat_type = res.data.cat_type;
+                } else {
+                    layer.alert(res.msg, {icon: 2});
+                }
+
+                //上传图片
+//                $('#LAY-article-edit-upload').imgUpload();
+
+                //删除图片
+//                $('.image-delete').imgDel(art_id, 'article');
+                $('.image-delete').imgDelQiNiu(art_id, 'article');
+
+                //实例化编辑器*
+                editor = UE.getEditor('LAY-article-edit-content');
+            }
+        });
+
+        //更换板块获取对应的栏目，radio单选框被点击时触发
+        form.on('radio(changeCatType)', function (data) {
+            if (data.value == cat_type) {
+                return false;//值未变更，则终止
+            }
+            cat_type = dom.find('input:radio[name="cat_type"]:checked').val();//赋值变更后的值
+            var index = layer.load(2, {time: 10 * 1000});
+            admin.req({
+                url: '/admin/article/getCatListOptionTree'
+                , data: {cat_type: data.value}
+                , done: function (res) {
+                    layer.close(index);
+                    if (res.code) {
+                        dom.find('select[name="cat_id"]').html('<option value="">请选择</option>' + res.data.option_tree);
+                        form.render('select');
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+        });
+
+        //日期事件，同时绑定多个
+        lay('.article-list-date').each(function () {
+            laydate.render({
+                elem: this
+                , trigger: 'click'
+                , type: 'date'
+            });
+        });
+
+        //提交
+        form.on('submit(' + filter + '-submit)', function (data) {
+            var field = data.field;
+            field.content = editor.getContent();
+            admin.req({
+                url: '/admin/article/save'
+                , data: field
+                , done: function (res) {
+                    if (res.code) {
+                        layer.msg(res.msg, {shade: [0.5, '#000'], time: 1000}, function () {
+                            location.hash = '/article/edit/art_id=' + res.data.id;
+                            layui.index.render();
+                        });
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
