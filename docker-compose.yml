@@ -7,7 +7,7 @@ services:
     ports:
       - 80:8080
     volumes:
-      - ./nginx-vhost/myapp.conf:/bitnami/nginx/conf/vhosts/myapp.conf
+      - ./container/nginx-vhost/myapp.conf:/bitnami/nginx/conf/vhosts/myapp.conf
       - .:/app
     restart: always  
     depends_on:
@@ -24,7 +24,7 @@ services:
     ports:
       - 3306:3306  
     volumes:
-      - ./mariadb-data:/bitnami
+      - ./container/mariadb-data:/bitnami
     restart: always
     networks:
       vpcbr:
@@ -35,7 +35,7 @@ services:
     image: bitnami/php-fpm:latest
     volumes:
       - .:/app
-      - ./php/custom.ini:/opt/bitnami/php/etc/conf.d/custom.ini
+      - ./container/php/custom.ini:/opt/bitnami/php/etc/conf.d/custom.ini
     restart: always  
     depends_on:
       - mariadb
@@ -49,7 +49,7 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - ./redis-persistence:/bitnami/redis/data
+      - ./container/redis-persistence:/bitnami/redis/data
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     restart: always

