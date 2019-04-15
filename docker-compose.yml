@@ -1,0 +1,67 @@
+version: "3"
+
+services:
+  nginx:
+    container_name: web
+    image: bitnami/nginx:latest
+    ports:
+      - 80:8080
+    volumes:
+      - ./nginx-vhost/myapp.conf:/bitnami/nginx/conf/vhosts/myapp.conf
+      - .:/app
+    restart: always  
+    depends_on:
+      - mariadb
+    networks:
+      vpcbr:
+        ipv4_address: 192.168.0.2    
+
+  mariadb:
+    container_name: db
+    image: bitnami/mariadb:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 3306:3306  
+    volumes:
+      - ./mariadb-data:/bitnami
+    restart: always
+    networks:
+      vpcbr:
+        ipv4_address: 192.168.0.3  
+
+  php-fpm:
+    container_name: fpm
+    image: bitnami/php-fpm:latest
+    volumes:
+      - .:/app
+      - ./php/custom.ini:/opt/bitnami/php/etc/conf.d/custom.ini
+    restart: always  
+    depends_on:
+      - mariadb
+    networks:
+      vpcbr:
+        ipv4_address: 192.168.0.4  
+
+  redis:
+    container_name: cache
+    image: bitnami/redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis-persistence:/bitnami/redis/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    restart: always
+    depends_on:
+      - mariadb
+    networks:
+      vpcbr:
+        ipv4_address: 192.168.0.5
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.0.0/16       
