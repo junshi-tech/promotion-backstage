@@ -9,14 +9,17 @@
 
 namespace app\soldier\controller;
 
+use think\Db;
+use think\facade\Cache;
+use think\facade\Request;
 use tp_wechat\EasyWeChat;
 
 class WeChat extends Base
 {
 
-    public function oauth($back_url)
+    public function oauth()
     {
-        $this->easyWechat->oauth->redirect()->send();
+        $this->easyWechat->oauth->scopes(['snsapi_userinfo'])->redirect()->send();
     }
 
     /**
@@ -24,16 +27,88 @@ class WeChat extends Base
      */
     public function oauthCallback()
     {
-        // 获取 OAuth 授权结果用户信息
-        $oauth = $this->easyWechat->oauth;
-        $user = $oauth->user();
+        try {
+            // 获取 OAuth 授权结果用户信息
+            $oauth = $this->easyWechat->oauth;
+            $wx_user = $oauth->user()->toArray();
 
-        //记录已登录状态
-        $_SESSION['wechat_user'] = $user->toArray();
+            $back_url = Request::param('back_url');
 
-        //重定向到前端用户页面
-        $targetUrl = empty($_SESSION['target_url']) ? '/' : $_SESSION['target_url'];
-        header('location:' . $targetUrl);
+            if (empty($back_url)) {
+                throw new \Exception('回调地址back_url不能为空！');
+            }
+
+            //保存授权用户信息
+            $this->saveUser($wx_user['original']);
+
+            //创建新token
+            $token = $this->createToken($wx_user['id']);
+            //在跳转到前端地址中加入token
+            $back_url .= '?token='.$token;
+            header('location:' . $back_url);
+            exit;
+        }
+        catch (\Exception $e) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = $e->getMessage();
+            return $this->result;
+        }
+    }
+
+    /**
+     * 创建token
+     * @param string $userId
+     * @return string
+     */
+    public function createToken(string $userId): string
+    {
+        $key = md5(str_shuffle($userId . time()));
+        $ip = Request::ip(1) ?? '';
+        Cache::set($key . $ip, $userId, config('api.tokenValidTime'));
+        return $key;
+    }
+
+    /**
+     * 根据用户 user_id 生成token，测试用
+     * @param string $userId
+     * @return array
+     * @throws \think\exception\DbException
+     */
+    public function getTestToken(string $userId)
+    {
+        $count = Db::name('user')->where('user_id', $userId)->count();
+        if ($count == 0) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '用户不存在：' . $userId;
+            return $this->result;
+        }
+        $this->result['data']['token'] = $this->createToken($userId);
+        return $this->result;
+    }
+
+    /**
+     * 保存用户信息
+     * @param $wx array 微信用户信息
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function saveUser($wx)
+    {
+        $data = [];
+        $data['openid'] = $wx['openid'];
+        $data['unionid'] = $wx['unionid'] ?? '';
+        $data['nickname'] = $wx['nickname'];
+        $data['city'] = $wx['city'];
+        $data['province'] = $wx['province'];
+        $data['country'] = $wx['country'];
+        $data['headimgurl'] = $wx['headimgurl'];
+        $count = Db::name('user')->where('openid', $wx['openid'])->count();
+        if ($count > 0) {
+            Db::name('user')->where('openid', $wx['openid'])->update($data);
+        } else {
+            $data['user_id'] = get_uuid();
+            Db::name('user')->insert($data);
+        }
     }
 
     /**

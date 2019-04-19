@@ -20,7 +20,10 @@ return [
         // 七牛云空间及域名
         'bucket' => 'donglixia',
         'domain' => 'qiniu.ingcu.com',
-    ]
+    ],
+
+    //token有效期7天
+    'tokenValidTime' => '604800'
 
 
 
