@@ -75,7 +75,7 @@ return [
              */
             'oauth' => [
                 'scopes' => ['snsapi_base'],
-                'callback' => '/api/we_chat/oauthCallback',
+                'callback' => '/Wechat/oauthCallback',
             ],
         ],
     ],

@@ -80,9 +80,16 @@ abstract class Base extends Model
         $data = $data ?? $this->getData();
         $this->saveData = $data;
         $this->allowField(true);
+        $pk = $this->getPk();
 
-        if ($this->hasPk($data)) {
+        if (!empty($data[$pk])) {
             $this->isUpdate();
+        } else {
+            $table_name = $this->getTable();
+            $pk_type = $this->getFieldsType($table_name,$pk);
+            if (strpos($pk_type, 'char') !== false ) {
+                $data[$pk] = get_uuid();
+            }
         }
 
         $result = parent::save($data, $map, $sequence);

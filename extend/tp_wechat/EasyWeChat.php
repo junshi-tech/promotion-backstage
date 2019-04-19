@@ -11,28 +11,50 @@ namespace tp_wechat;
 
 use EasyWeChat\Factory;
 use think\facade\Config;
+use think\facade\Request;
 
 class EasyWeChat
 {
-    //微信配置
-    private $config;
     private $easyWechat;
 
     public function __construct()
     {
+        $this->initEasyWechat();
+    }
+
+    /**
+     * 实例化
+     */
+    public function initEasyWechat()
+    {
+        $config = $this->initConfig();
+        $this->easyWechat = Factory::officialAccount($config);
+    }
+
+    /**
+     * 初始化配置信息
+     * @return mixed
+     */
+    public function initConfig()
+    {
 //        $domain = Request::domain();
 //        if (strpos($domain, 'ts-www') !== false) {
 //            //生产环境
-//            $this->config = Config::get('wechat.official_account.default');
+//            $config = Config::get('wechat.official_account.default');
 //            ;
 //        } else {
 //            //测试环境
-//            $this->config = Config::get('wechat.official_account_test.default');
+//            $config = Config::get('wechat.official_account_test.default');
 //        }
 
         //暂时用测试环境
-        $this->config = Config::get('wechat.official_account_test.default');
-        $this->easyWechat = Factory::officialAccount($this->config);
+        $config = Config::get('wechat.official_account_test.default');
+        $back_url = Request::param('back_url');
+        if (!empty($back_url)) {
+            $config['oauth']['callback'] .= '?back_url='.urlencode($back_url);
+        }
+
+        return $config;
     }
 
     /**
