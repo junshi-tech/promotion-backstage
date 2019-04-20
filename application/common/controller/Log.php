@@ -117,13 +117,6 @@ class Log
             $data['create_time'] = date('Y-m-d H:i:s');
             $content = json_encode($data, JSON_UNESCAPED_UNICODE);//json格式，保留中文
             Db::name('log_error')->insert($data);
-            //给超级管理员发送站内信
-            $log = [];
-            $log['title'] = '系统新错误，请查看错误日志';
-            $log['content'] = $content;
-            $log['type'] = 2;//通知类型
-            $log['role_id'] = 1;//角色权限
-            $this->sendMessage($log);
         }
         catch (\Exception $e) {
             Db::name('log_error')->insert(['content' => '本表信息保存失败：'.$e->getMessage().'; '.$content, 'create_time'=>date('Y-m-d H:i:s')]);

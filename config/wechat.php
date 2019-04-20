@@ -36,9 +36,9 @@ return [
     'official_account' => [
         'default' => [
             // 公众号  绑定支付的APPID（必须配置，开户邮件中可查看）
-            'app_id' => env('WECHAT_OFFICIAL_ACCOUNT_APPID', 'wxf78ca1151706487a'),
+            'app_id' => env('WECHAT_OFFICIAL_ACCOUNT_APPID', 'wxe44a1668683a741e'),
             // AppSecret
-            'secret' => env('WECHAT_OFFICIAL_ACCOUNT_SECRET', '79a33a95041b878f840eeb0b2507bfbb'),
+            'secret' => env('WECHAT_OFFICIAL_ACCOUNT_SECRET', 'e481f443c9bd23f17b0e248a15944abe'),
             // Token
             'token' => env('WECHAT_OFFICIAL_ACCOUNT_TOKEN', 'BLWeChat1050'),
             // EncodingAESKey 加解密密钥
@@ -51,7 +51,7 @@ return [
              */
             'oauth' => [
                 'scopes' => ['snsapi_userinfo'],
-                'callback' => '/api/we_chat/oauthCallback',
+                'callback' => '/Wechat/oauthCallback',
             ],
         ],
     ],

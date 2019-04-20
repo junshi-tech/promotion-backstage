@@ -4,32 +4,32 @@
 // +----------------------------------------------------------------------
 // | Author: 十万马 <962863675@qq.com>
 // +----------------------------------------------------------------------
-// | DateTime: 2018/10/29 20:11
+// | DateTime: 2019/3/7 16:56
 // +----------------------------------------------------------------------
 
-namespace app\admin\controller;
+namespace app\soldier\controller;
 
-use app\admin\model\GoodsCat as GoodsCatModel;
+use tp_tool\UploadImage;
 
-class GoodsCat extends Base
+class Upload extends Base
 {
-    /**
-     * 初始化模型、验证器
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->currentModel = new GoodsCatModel();
-    }
 
-    public function getData()
+    /**
+     * 上传图片
+     * @return array
+     */
+    public function image()
     {
-        $list = $this->currentModel->getDataList();
-        $this->result['data'] = $list;
+        //测试数据
+        $_POST['image'] = $_POST['image'] ?? base64_encode_image('./static/img/avatar/user42.png');
+
+        $upload = new UploadImage();
+        $date = date('Ymd');
+        $this->result['data']['img'] = get_domain().$upload->file('image')->store('img/'.$date.'/')->compress();
+
         return $this->result;
     }
 
+
+
 }
-
-
-

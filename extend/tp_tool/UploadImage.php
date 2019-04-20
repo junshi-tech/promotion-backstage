@@ -9,7 +9,7 @@
 // | Author: 黎小龙 <shalinglom@gmail.com>
 // +----------------------------------------------------------------------
 
-namespace extend;
+namespace tp_tool;
 
 use think\facade\Request;
 
@@ -37,17 +37,25 @@ class UploadImage
     private $rootPath = './upload/';
 
     /**
-     * 原图
+     * 原图路径（包含文件名）
      * @var
      */
     private $sourceImg;
 
-    private $sourceImgAbsolutePath;
-    private $file;
+    /**
+     * 保存地址, $rootPath 之后的路径部分（不包含文件名）
+     * @var
+     */
     private $store;
 
     /**
-     * 图片文件
+     * 图片文件,前端传过来的文件name
+     * @var
+     */
+    private $file;
+
+    /**
+     * 设置图片文件,前端传过来的文件name
      * @param string $file
      * @return UploadImage
      */
@@ -58,7 +66,7 @@ class UploadImage
     }
 
     /**
-     * 保存地址
+     * 设置保存地址, $rootPath 之后的路径部分
      * @param string $store
      * @return UploadImage
      */
@@ -78,17 +86,13 @@ class UploadImage
         if ($request->file($this->file)) {
             //file方式上传
             $this->sourceImg = $request->file($this->file)->store($this->store);
-        } elseif ($request->param($this->file)) {
+        } elseif ($base64 = $request->post($this->file)) {
             //base64编码式上传
-            preg_match('/^(data:\s*image\/(\w+);base64,)/', $request->param($this->file), $result);
-            $this->sourceImg = $this->store . '/' . md5(get_uuid()).'.'.$result[2];
-            $base64 = str_replace($result[1], '', $request->param($this->file));
-            $img = base64_decode($base64);
-            file_put_contents('./upload/img/' . $this->sourceImg, $img);
+            $this->sourceImg = base64_content_image($base64, $this->rootPath . $this->store);
         } else {
             return false;
         }
-        $this->sourceImgAbsolutePath = './upload/img/' . $this->sourceImg;
+
     }
 
     /**
@@ -98,7 +102,7 @@ class UploadImage
     public function source(): string
     {
         $this->save();
-        return $this->rootPath . $this->sourceImg;
+        return substr($this->sourceImg, 1);
     }
 
     /**
@@ -122,9 +126,11 @@ class UploadImage
         $this->imageName = md5(get_uuid());
         $this->_openImage();
         $imageName = $this->_saveImage($this->imageName);
-        unlink($this->sourceImgAbsolutePath);
-        rename("./" . $imageName, UPLOAD_FILE_PATH . $this->store . '/' . $imageName);
-        return $this->rootPath . $this->store . '/' . $imageName;
+
+        $new_file = $this->rootPath . $this->store . '/' . $imageName;
+        unlink($this->sourceImg);
+        rename("./" . $imageName, $new_file);
+        return substr($new_file, 1);
     }
 
     /**
@@ -132,7 +138,7 @@ class UploadImage
      */
     private function _openImage()
     {
-        list($width, $height, $type, $attr) = getimagesize($this->sourceImgAbsolutePath);
+        list($width, $height, $type, $attr) = getimagesize($this->sourceImg);
         $this->imageinfo = array(
             'width' => $width,
             'height' => $height,
@@ -140,7 +146,7 @@ class UploadImage
             'attr' => $attr
         );
         $fun = "imagecreatefrom" . $this->imageinfo['type'];
-        $this->image = $fun($this->sourceImgAbsolutePath);
+        $this->image = $fun($this->sourceImg);
         $this->_thumpImage();
     }
 
