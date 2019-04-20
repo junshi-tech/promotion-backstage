@@ -38,6 +38,9 @@ class PicSoldier extends Base
 
         try {
 
+            if (!empty($this->data['img_url'])) {
+                $this->data['img_url'] = json_encode($this->data['img_url']);
+            }
             //保存数据
             $this->currentModel->save($this->data);
         } catch (\Exception $e) {

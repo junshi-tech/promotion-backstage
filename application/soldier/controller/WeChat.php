@@ -206,7 +206,6 @@ class WeChat extends Base
         return $content;
     }
 
-
     public function tsSendMsg()
     {
         $EasyWeChat = new EasyWeChat();

@@ -453,3 +453,55 @@ if (!function_exists('http_curl')) {
         return $ret;
     }
 }
+
+if(!function_exists('base64_encode_image')){
+    /**
+     * 将图片生成base64数据流
+     * @param $image_file
+     * @return string
+     */
+    function base64_encode_image ($image_file) {
+        $image_info = getimagesize($image_file);
+        $image_data = fread(fopen($image_file, 'r'), filesize($image_file));
+        $base64_image = 'data:' . $image_info['mime'] . ';base64,' . chunk_split(base64_encode($image_data));
+        return $base64_image;
+    }
+}
+
+if (!function_exists('base64_content_image')) {
+    /**
+     * base64格式编码转换为图片并保存对应文件夹
+     * @param $base64_data
+     * @param $path
+     * @return bool|string
+     */
+    function base64_content_image($base64_data,$path){
+        //匹配出图片的格式
+        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_data, $result)){
+            if(!file_exists($path)){
+                //检查是否有该文件夹，如果没有就创建，并给予最高权限
+                mkdir($path, 0700);
+            }
+            $new_file = $path.md5(get_uuid()).".{$result[2]}";
+            $base64 = str_replace($result[1], '', $base64_data);
+            if (file_put_contents($new_file, base64_decode($base64))){
+                return $new_file;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+}
+
+if (!function_exists('get_domain')) {
+    /**
+     * 获取当前环境域名
+     */
+    function get_domain()
+    {
+        return config('system.domain')[config('system.version')];
+    }
+
+}
