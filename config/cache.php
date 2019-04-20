@@ -15,7 +15,7 @@
 
 return [
     // 驱动方式redis file
-    'type'   => 'redis',
+    'type'   => 'file',
     // 缓存保存目录
     'path'   => '',
     // 缓存前缀
