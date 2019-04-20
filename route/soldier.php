@@ -15,16 +15,16 @@ use think\facade\Route;
  */
 
 //公众号授权登录
-Route::any('Wechat/Login', 'soldier/WeChat/oauth');
+Route::any('soldier/Wechat/Login', 'soldier/WeChat/oauth');
 
 //微信登录回调地址
-Route::any('Wechat/OauthCallback', 'soldier/WeChat/oauthCallback');
+Route::any('soldier/Wechat/OauthCallback', 'soldier/WeChat/oauthCallback');
 
 //微信服务器响应
-Route::any('Wechat/Server', 'soldier/WeChat/server');
+Route::any('soldier/Wechat/Server', 'soldier/WeChat/server');
 
 //获取测试token
-Route::any('Wechat/getTestToken', 'soldier/WeChat/getTestToken');
+Route::any('soldier/Wechat/getTestToken', 'soldier/WeChat/getTestToken');
 
 /*需要登录鉴权的接口*/
 Route::group('soldier', function () {
@@ -35,8 +35,7 @@ Route::group('soldier', function () {
     Route::post('saveData', 'soldier/PicSoldier/save');
 
     //上传照片
-    //删除照片
-
+    Route::post('uploadImg', 'soldier/Upload/image');
 
     //保存点赞支持
     Route::post('saveLike', 'soldier/PicSoldier/saveLike');
