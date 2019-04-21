@@ -1,5 +1,5 @@
 .idea/
-vendor/
+
 runtime/
 mariadb-data/*
 redis-persistence/*
