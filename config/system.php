@@ -13,7 +13,7 @@
 
 return [
     // 当前环境 or 版本：dev; test; product
-    'version' => 'dev',
+    'version' => 'product',
 
      //当前域名
     'domain'            => [
