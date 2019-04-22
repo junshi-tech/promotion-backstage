@@ -37,18 +37,15 @@ class EasyWeChat
      */
     public function initConfig()
     {
-//        $domain = Request::domain();
-//        if (strpos($domain, 'ts-www') !== false) {
-//            //生产环境
-//            $config = Config::get('wechat.official_account.default');
-//            ;
-//        } else {
-//            //测试环境
-//            $config = Config::get('wechat.official_account_test.default');
-//        }
+        $domain = get_domain();
+        if ($domain == 'http://www.szsjunshi.com') {
+            //生产环境
+            $config = Config::get('wechat.official_account.default');
+        } else {
+            //测试环境
+            $config = Config::get('wechat.official_account_test.default');
+        }
 
-        //暂时用测试环境
-        $config = Config::get('wechat.official_account_test.default');
         $back_url = Request::param('back_url');
         if (!empty($back_url)) {
             $config['oauth']['callback'] .= '?back_url='.urlencode($back_url);
