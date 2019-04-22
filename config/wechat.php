@@ -36,9 +36,9 @@ return [
     'official_account' => [
         'default' => [
             // 公众号  绑定支付的APPID（必须配置，开户邮件中可查看）
-            'app_id' => env('WECHAT_OFFICIAL_ACCOUNT_APPID', 'wxc63e8455ef75ddaa'),
+            'app_id' => env('WECHAT_OFFICIAL_ACCOUNT_APPID', 'wxe44a1668683a741e'),
             // AppSecret
-            'secret' => env('WECHAT_OFFICIAL_ACCOUNT_SECRET', '9a012b85168da8c40e05cbd8797175fc'),
+            'secret' => env('WECHAT_OFFICIAL_ACCOUNT_SECRET', 'e481f443c9bd23f17b0e248a15944abe'),
             // Token
             'token' => env('WECHAT_OFFICIAL_ACCOUNT_TOKEN', 'KSJUNSTARSHIKONG'),
             // EncodingAESKey 加解密密钥
