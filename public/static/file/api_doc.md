@@ -19,6 +19,25 @@
 http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=002aafd5-971a-2820-9430-2ad28b02f690
 http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc92-7b4f94275bc0
 
+### 获取授权用户信息（头像等）  
+  
+示例：http://junshi.ingcu.com/soldier/Wechat/getUserInfo?token=21937e23a6fef73336109ef32cc81df9
+
+|参数说明(GET)：|------|
+|--------------|--------------|
+|token       |	用于判断是否登录|
+
+返回结果：
+
+    {
+        "code": 1,
+        "msg": "success",
+        "data": {
+            "user_id": "fd1b3f80-0440-0e5d-2ef0-ebfeb3ec3066",
+            "headimgurl": "http://thirdwx.qlogo.cn/mmopen/vi_32/nQKrWbWX0V5XM06UWoDQ0aibKbdWYANChUYATW7fbwL5TiaTqqSbdWz7xOJFX62yaRjUyj0gYv464Fk7ZcDd36TQ/132"
+        }
+    }
+
 ### 获取军人信息  
   
 示例：http://junshi.ingcu.com/soldier/getData.html?id=fd1b3f80-0440-0e5d-2ef0-ebfeb3ec3058&token=oPthy55wIachJ-C9YkCmKHPy8gt4
