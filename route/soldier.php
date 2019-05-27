@@ -28,6 +28,9 @@ Route::any('soldier/Wechat/getTestToken', 'soldier/WeChat/getTestToken');
 
 /*需要登录鉴权的接口*/
 Route::group('soldier', function () {
+    //获取授权用户信息
+    Route::get('Wechat/getUserInfo', 'soldier/WeChat/getUserInfo');
+
     //获取军人信息
     Route::get('getData', 'soldier/PicSoldier/getData');
 

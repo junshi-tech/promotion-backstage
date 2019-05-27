@@ -87,6 +87,17 @@ class WeChat extends Base
     }
 
     /**
+     * 获取授权用户信息
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function getUserInfo()
+    {
+        $this->result['data'] = Db::name('user')->field('user_id,openid,nickname,city,province,country,headimgurl,phone,birthday')->find($this->user_id);
+        return $this->result;
+    }
+
+    /**
      * 保存用户信息
      * @param $wx array 微信用户信息
      * @throws \think\Exception
