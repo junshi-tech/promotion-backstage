@@ -37,10 +37,14 @@ class PicSoldier extends Base
         $this->currentValidate->checkData('save');
 
         try {
-
             if (!empty($this->data['img_url'])) {
                 $this->data['img_url'] = json_encode($this->data['img_url']);
             }
+
+            //如果该用户已生成，则更新
+            $id = Db::name('pic_soldier_like')->where('user_id', $this->user_id)->value('id');
+            if($id) $this->data['id'] = $id;
+
             //保存数据
             $this->currentModel->save($this->data);
         } catch (\Exception $e) {
