@@ -9,6 +9,7 @@
 
 namespace app\soldier\controller;
 
+use app\common\controller\Log;
 use think\Db;
 use think\facade\Cache;
 use think\facade\Request;
@@ -39,10 +40,10 @@ class WeChat extends Base
             }
 
             //保存授权用户信息
-            $this->saveUser($wx_user['original']);
+            $userId = $this->saveUser($wx_user['original']);
 
             //创建新token
-            $token = $this->createToken($wx_user['id']);
+            $token = $this->createToken($userId);
             //在跳转到前端地址中加入token
             $back_url .= '?token='.$token;
             header('location:' . $back_url);
@@ -113,13 +114,16 @@ class WeChat extends Base
         $data['province'] = $wx['province'];
         $data['country'] = $wx['country'];
         $data['headimgurl'] = $wx['headimgurl'];
-        $count = Db::name('user')->where('openid', $wx['openid'])->count();
-        if ($count > 0) {
+        $user_id = Db::name('user')->where('openid', $wx['openid'])->value('user_id');
+        if ($user_id) {
             Db::name('user')->where('openid', $wx['openid'])->update($data);
         } else {
             $data['user_id'] = get_uuid();
+            $user_id = $data['user_id'];
             Db::name('user')->insert($data);
         }
+
+        return $user_id;
     }
 
     /**
