@@ -20,9 +20,9 @@ class PicSoldier extends Base
         $this->currentValidate = new PicSoldierValidate();
     }
 
-    public function getData($id)
+    public function getData()
     {
-        $data = $this->currentModel->where('id', $id)->find();
+        $data = $this->currentModel->where('user_id', $this->user_id)->find();
 
         $this->result['data'] = $data;
         return $this->result;

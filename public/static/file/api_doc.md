@@ -44,7 +44,6 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
 
 |参数说明(GET)：|------|
 |--------------|--------------|
-|id |	军人主键id|
 |token       |	用于判断是否登录|
 
 返回结果：
