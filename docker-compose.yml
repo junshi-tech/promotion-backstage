@@ -20,7 +20,7 @@ services:
     container_name: js_db
     image: bitnami/mariadb:latest
     environment:
-      - MARIADB_ROOT_PASSWORD=root
+      - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_EXTRA_FLAGS=--max-connect-errors=1000 --max_connections=155
     ports:
       - 3306:3306  

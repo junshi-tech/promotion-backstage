@@ -60,7 +60,8 @@ abstract class Base extends CoreBase
         $this->limit = isset($this->data["limit"]) ? ($this->data["limit"]<10000 ? $this->data["limit"] : 10000) : 15;
 
         //记录访客日志
-        sock_open($this->request->domain().'/admin/log/saveVisitLog?url='.$this->request->url(true).'&user_id='.get_aid());
+//        sock_open($this->request->domain().'/admin/log/saveVisitLog?url='.$this->request->url(true).'&user_id='.get_aid());
+        (new \app\admin\controller\Log())->saveVisitLog();
 
         if (empty(get_aid())) {
             if (!empty($this->data['access_token'])) {
