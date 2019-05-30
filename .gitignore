@@ -1,7 +1,7 @@
 .idea/
 runtime/
-mariadb-data/*
-redis-persistence/*
+mariadb-data/
+redis-persistence/
 /.idea
 /.vscode
 *.log
