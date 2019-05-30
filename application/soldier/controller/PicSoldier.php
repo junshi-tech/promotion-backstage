@@ -48,6 +48,13 @@ class PicSoldier extends Base
 
             //保存数据
             $this->currentModel->save($this->data);
+
+            //读取当前数据
+            if(!$id){
+                $id = $this->currentModel->getLastInsID();
+            }
+            $_data = $this->getData($id);
+            $this->result['data'] = $_data['data'];
         } catch (\Exception $e) {
             $msg = !empty($this->currentModel->getError()) ? $this->currentModel->getError() : $e->getMessage();
             (new Log())->saveErrorLog($msg . ' [' . $e->getFile() . ':' . $e->getLine() . ']');
@@ -55,8 +62,8 @@ class PicSoldier extends Base
             $this->result['msg'] = $msg;
             return $this->result;
         }
-        $pk = $this->currentModel->getPk();
-        $this->result['data']['soldier_id'] = $this->currentModel->getData($pk);
+        //$pk = $this->currentModel->getPk();
+        //$this->result['data']['soldier_id'] = $this->currentModel->getData($pk);
         return $this->result;
     }
 
