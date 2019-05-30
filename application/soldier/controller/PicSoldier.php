@@ -22,7 +22,7 @@ class PicSoldier extends Base
 
     public function getData($id)
     {
-        $data = $this->currentModel->where('id', $id)->find();
+        $data = $this->currentModel->where('id|user_id', $id)->find();
 
         $this->result['data'] = $data;
         return $this->result;
