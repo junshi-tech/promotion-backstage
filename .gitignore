@@ -2,7 +2,6 @@
 runtime/
 mariadb-data/
 redis-persistence/
-vendor/e
 *.log
 .env
 .DS_Store
