@@ -2,12 +2,6 @@
 runtime/
 mariadb-data/
 redis-persistence/
-<<<<<<< HEAD
-/.idea
-/.vscode
-=======
-vendor/e
->>>>>>> 8138716ff7b75a7ea22d617da098e3b0302c329d
 *.log
 .env
 .DS_Store
