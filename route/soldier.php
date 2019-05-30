@@ -13,6 +13,10 @@ use think\facade\Route;
 /**
  * 我是一个军人
  */
+//默认主页
+Route::any('/', function () {
+    return 'hello,world!';
+});
 
 //公众号授权登录
 Route::any('soldier/Wechat/Login', 'soldier/WeChat/oauth');
