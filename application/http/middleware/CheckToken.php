@@ -25,7 +25,6 @@ class CheckToken
 
             //检验 user
             $errorCode = 10001;
-
             $userInfo = Db::name('user')->where('user_id', $userId)->field('user_id,nickname,phone,state')->find();
             if (!$userInfo) {
                 exception('查找不到用户信息');

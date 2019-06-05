@@ -38,11 +38,10 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
 
 ### 获取军人信息  
   
-示例：http://junshi.ingcu.com/soldier/getData.html?id=fd1b3f80-0440-0e5d-2ef0-ebfeb3ec3058&token=oPthy55wIachJ-C9YkCmKHPy8gt4
+示例：http://junshi.ingcu.com/soldier/getData.html?soldier_id=fd1b3f80-0440-0e5d-2ef0-ebfeb3ec3058&token=oPthy55wIachJ-C9YkCmKHPy8gt4
 
 |参数说明(GET)：|------|
 |--------------|--------------|
-|token       |	用于判断是否登录|
 |soldier_id       |	军人主键id|
 
 返回结果：
@@ -50,7 +49,7 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
     "data": {
         "own": {
             "id": "FF76E64B-8F84-EB65-963F-0CDFD91033D5",
-            "username": "韦育章",
+            "username": "智多星",
             "headimgurl": "http://thirdwx.qlogo.cn/mmopen/vi_32/X9SiblNYpFPNOhYquGvWPRDo2H3meNxGjEFOKMCAvozIhSDOTlguTfibIVQaA5ibG4Qn9rU84QeFjlAKzAh15icRRw/132",
             "type_text": "中国人民解放军陆军",
             "rank_text": "军官",
@@ -62,7 +61,7 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
                 "remark": "祖国因你而强大！",
                 "create_time": "2019-06-04 15:54:37",
                 "headimgurl": "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLAeExOiaEkke4Xibw2Ztia31gp1bX0IMR7YnVRRdXGj1TVUXyDw08SX2E2gGibuEqIGZHwDQF3icslYcQ/132",
-                "nickname": "缘起浮生"
+                "nickname": "无用"
             }
         ]
     }
