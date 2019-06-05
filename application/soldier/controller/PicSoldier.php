@@ -28,6 +28,7 @@ class PicSoldier extends Base
      */
     public function getData($soldier_id)
     {
+
         $data = $this->currentModel->where('id', $soldier_id)->field('id as soldier_id,user_id,type,username,join_time,rank')->find();
         if ($data) {
             $data = $data->toArray();
@@ -48,6 +49,7 @@ class PicSoldier extends Base
         $data['join_date'] = date('Y', strtotime($data['join_time']));
 
         //点赞列表
+
         $list = Db::name('pic_soldier_like')->where('soldier_id', $data['soldier_id'])->field('user_id,remark,create_time')->select();;
         $user_list = Db::name('user')->column('headimgurl,nickname', 'user_id');
         foreach ($list as $k=>$v) {
@@ -111,7 +113,7 @@ class PicSoldier extends Base
             Db::name('pic_soldier_like')->insert($save_data);
         } else {
             $this->result['code'] = 0;
-            $this->result['msg'] = '点赞信息已存在，请勿重复操作！';
+            $this->result['msg'] = '您已点赞！';
         }
         return $this->result;
     }

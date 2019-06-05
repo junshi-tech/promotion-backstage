@@ -234,7 +234,5 @@ abstract class Base extends CoreBase
         }
         return !empty($data) ? $data : [];
     }
-
-
-
 }
+
