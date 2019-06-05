@@ -104,7 +104,7 @@ class PicSoldier extends Base
             Db::name('pic_soldier_like')->insert($save_data);
         } else {
             $this->result['code'] = 0;
-            $this->result['msg'] = '点赞信息已存在，请勿重复操作！';
+            $this->result['msg'] = '您已点赞，请勿重复操作！';
         }
         return $this->result;
     }
