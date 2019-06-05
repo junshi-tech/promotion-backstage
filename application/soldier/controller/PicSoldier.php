@@ -28,10 +28,18 @@ class PicSoldier extends Base
      */
     public function getData($soldier_id)
     {
-        $data = $this->currentModel->where('id', $soldier_id)->field('id,type,username,join_time,rank')->find();
-        if ($data) $data = $data->toArray();
+
+        $data = $this->currentModel->where('id', $soldier_id)->field('id as soldier_id,user_id,type,username,join_time,rank')->find();
+        if ($data) {
+            $data = $data->toArray();
+        } else {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '该参数查找不到数据！' ;
+            return $this->result;
+        }
+
         //头像
-        $data['headimgurl'] = Db::name('user')->where('user_id', $this->user_id)->value('headimgurl');
+        $data['headimgurl'] = Db::name('user')->where('user_id', $data['user_id'])->value('headimgurl');
         //兵种
         $type_item = ['1'=>'中国人民解放军陆军', '2'=>'中国人民解放军空军', '3'=>'中国人民解放军海军', '4'=>'中国人民武装警察部队', '5'=>'中国人民解放军特种部队'];
         $data['type_text'] = $type_item[$data['type']] ?? '';
@@ -41,7 +49,8 @@ class PicSoldier extends Base
         $data['join_date'] = date('Y', strtotime($data['join_time']));
 
         //点赞列表
-        $list = Db::name('pic_soldier_like')->where('soldier_id', $data['id'])->field('user_id,remark,create_time')->select();;
+
+        $list = Db::name('pic_soldier_like')->where('soldier_id', $data['soldier_id'])->field('user_id,remark,create_time')->select();;
         $user_list = Db::name('user')->column('headimgurl,nickname', 'user_id');
         foreach ($list as $k=>$v) {
             $list[$k]['create_time'] = date('Y-m-d H:i:s', $v['create_time']);

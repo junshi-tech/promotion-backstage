@@ -38,11 +38,10 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
 
 ### 获取军人信息  
   
-示例：http://junshi.ingcu.com/soldier/getData.html?id=fd1b3f80-0440-0e5d-2ef0-ebfeb3ec3058&token=oPthy55wIachJ-C9YkCmKHPy8gt4
+示例：http://junshi.ingcu.com/soldier/getData.html?soldier_id=fd1b3f80-0440-0e5d-2ef0-ebfeb3ec3058&token=oPthy55wIachJ-C9YkCmKHPy8gt4
 
 |参数说明(GET)：|------|
 |--------------|--------------|
-|token       |	用于判断是否登录|
 |soldier_id       |	军人主键id|
 
 返回结果：
@@ -140,5 +139,3 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
 |token       |	用于判断是否登录|
 |image       |	图片base64数据流|
 |返回结果:   |	{"code":1,"msg":"success","data":{"img":"http:\/\/ts-www.junshi.cm\/upload\/img\/20190420\/\/82057076fec1f88b5f28aaaa2b38f8d4.png"}}|
-
-
