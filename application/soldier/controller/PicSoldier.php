@@ -20,10 +20,37 @@ class PicSoldier extends Base
         $this->currentValidate = new PicSoldierValidate();
     }
 
-    public function getData()
+    /**
+     * 获取军人信息
+     * @param $soldier_id
+     * @return array
+     * @throws \think\exception\DbException
+     */
+    public function getData($soldier_id)
     {
-        $data = $this->currentModel->where('user_id', $this->user_id)->find();
-        $this->result['data'] = $data;
+        $data = $this->currentModel->where('id', $soldier_id)->field('id,type,username,join_time,rank')->find();
+        if ($data) $data = $data->toArray();
+        //头像
+        $data['headimgurl'] = Db::name('user')->where('user_id', $this->user_id)->value('headimgurl');
+        //兵种
+        $type_item = ['1'=>'中国人民解放军陆军', '2'=>'中国人民解放军空军', '3'=>'中国人民解放军海军', '4'=>'中国人民武装警察部队', '5'=>'中国人民解放军特种部队'];
+        $data['type_text'] = $type_item[$data['type']] ?? '';
+        //军官
+        $rank_item = ['1'=>'义务兵', '2'=>'士官', '3'=>'军官'];
+        $data['rank_text'] = $rank_item[$data['rank']] ?? '';
+        $data['join_date'] = date('Y', strtotime($data['join_time']));
+
+        //点赞列表
+        $list = Db::name('pic_soldier_like')->where('soldier_id', $data['id'])->field('user_id,remark,create_time')->select();;
+        $user_list = Db::name('user')->column('headimgurl,nickname', 'user_id');
+        foreach ($list as $k=>$v) {
+            $list[$k]['create_time'] = date('Y-m-d H:i:s', $v['create_time']);
+            $list[$k]['headimgurl'] = $user_list[$v['user_id']]['headimgurl'];
+            $list[$k]['nickname'] = $user_list[$v['user_id']]['nickname'];
+        }
+
+        $this->result['data']['own'] = $data;
+        $this->result['data']['list'] = $list;
         return $this->result;
     }
 
@@ -47,13 +74,6 @@ class PicSoldier extends Base
 
             //保存数据
             $this->currentModel->save($this->data);
-
-            //读取当前数据
-            if(!$id){
-                $id = $this->currentModel->getLastInsID();
-            }
-            $_data = $this->getData($id);
-            $this->result['data'] = $_data['data'];
         } catch (\Exception $e) {
             $msg = !empty($this->currentModel->getError()) ? $this->currentModel->getError() : $e->getMessage();
             (new Log())->saveErrorLog($msg . ' [' . $e->getFile() . ':' . $e->getLine() . ']');
@@ -61,8 +81,8 @@ class PicSoldier extends Base
             $this->result['msg'] = $msg;
             return $this->result;
         }
-        //$pk = $this->currentModel->getPk();
-        //$this->result['data']['soldier_id'] = $this->currentModel->getData($pk);
+        $pk = $this->currentModel->getPk();
+        $this->result['data']['soldier_id'] = $this->currentModel->getData($pk);
         return $this->result;
     }
 
@@ -107,10 +127,27 @@ class PicSoldier extends Base
      */
     public function getRanking()
     {
-        $soldier_list = Db::name('pic_soldier')->column('username', 'id');
-        $soldier_like = Db::name('pic_soldier_like')->field('soldier_id,count(*) as number')->group('soldier_id')->order('number desc')->limit(100)->select();
+        //获取发起人填写的信息
+        $soldier_list = Db::name('pic_soldier')->column('username,type,user_id', 'id');
+        $user_list = Db::name('user')->column('headimgurl', 'user_id');
+
+        //获取点赞数量排行
+        $soldier_like = Db::name('pic_soldier_like')
+            ->field('soldier_id,count(*) as number')
+            ->group('soldier_id')
+            ->order('number desc')
+            ->limit(30)
+            ->select();
+
+        //兵种
+        $type_item = ['1'=>'陆军', '2'=>'空军', '3'=>'海军', '4'=>'武警', '5'=>'特种兵'];
         foreach ($soldier_like as $k=>$v) {
-            $soldier_like[$k]['username'] = $soldier_list[$v['soldier_id']];
+            //头像
+            $soldier_like[$k]['headimgurl'] = $user_list[$soldier_list[$v['soldier_id']]['user_id']] ?? '';
+            //昵称
+            $soldier_like[$k]['username'] = $soldier_list[$v['soldier_id']]['username'] ?? '';
+            //兵种
+            $soldier_like[$k]['type'] = $type_item[$soldier_list[$v['soldier_id']]['type']] ?? '';
         }
 
         $this->result['data'] = $soldier_like;

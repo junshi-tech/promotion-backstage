@@ -94,7 +94,9 @@ class WeChat extends Base
      */
     public function getUserInfo()
     {
-        $this->result['data'] = Db::name('user')->field('user_id,openid,nickname,city,province,country,headimgurl,phone,birthday')->find($this->user_id);
+        $data = Db::name('user')->where('user_id', $this->user_id)->field('user_id,nickname,headimgurl')->find();
+        $data['soldier_id'] = Db::name('pic_soldier')->where('user_id', $this->user_id)->value('id');
+        $this->result['data'] = $data;
         return $this->result;
     }
 

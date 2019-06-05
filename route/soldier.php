@@ -14,7 +14,7 @@ use think\facade\Route;
  * 我是一个军人
  */
 //默认主页
-Route::any('', function () {
+Route::any('/', function () {
     return 'hello,world!';
 });
 
