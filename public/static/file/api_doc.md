@@ -139,5 +139,3 @@ http://junshi.ingcu.com/soldier/Wechat/getTestToken?userId=1811b7c2-85a2-9776-bc
 |token       |	用于判断是否登录|
 |image       |	图片base64数据流|
 |返回结果:   |	{"code":1,"msg":"success","data":{"img":"http:\/\/ts-www.junshi.cm\/upload\/img\/20190420\/\/82057076fec1f88b5f28aaaa2b38f8d4.png"}}|
-
-

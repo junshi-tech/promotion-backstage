@@ -1,9 +1,7 @@
 .idea/
 runtime/
-mariadb-data/*
-redis-persistence/*
-/.idea
-/.vscode
+mariadb-data/
+redis-persistence/
 *.log
 .env
 .DS_Store
