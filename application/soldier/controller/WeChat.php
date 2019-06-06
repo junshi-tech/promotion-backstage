@@ -45,7 +45,7 @@ class WeChat extends Base
             //创建新token
             $token = $this->createToken($userId);
             //在跳转到前端地址中加入token
-            $back_url .= '?token='.$token;
+            $back_url .= strpos($back_url, '?') === false ? '?token='.$token : '&token='.$token;
             header('location:' . $back_url);
             exit;
         }

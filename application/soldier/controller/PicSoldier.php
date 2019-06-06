@@ -50,7 +50,7 @@ class PicSoldier extends Base
 
         //点赞列表
 
-        $list = Db::name('pic_soldier_like')->where('soldier_id', $data['soldier_id'])->field('user_id,remark,create_time')->select();;
+        $list = Db::name('pic_soldier_like')->where('soldier_id', $data['soldier_id'])->field('user_id,remark,create_time')->order('create_time desc')->select();;
         $user_list = Db::name('user')->column('headimgurl,nickname', 'user_id');
         foreach ($list as $k=>$v) {
             $list[$k]['create_time'] = date('Y-m-d H:i:s', $v['create_time']);
