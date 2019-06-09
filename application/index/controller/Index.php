@@ -6,6 +6,6 @@ use think\Db;
 class Index extends \think\Controller
 {
     public function index(){ 
-        die('Hello World!');
+        phpinfo();
     }
 }
