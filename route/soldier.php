@@ -28,6 +28,8 @@ Route::any('soldier/Wechat/Server', 'soldier/WeChat/server');
 Route::any('soldier/Wechat/getTestToken', 'soldier/WeChat/getTestToken');
 //获取军人信息
 Route::get('soldier/getData', 'soldier/PicSoldier/getData');
+//获取参与人数
+Route::get('soldier/getJoinNum', 'soldier/PicSoldier/getJoinNum');
 
 /*需要登录鉴权的接口*/
 Route::group('soldier', function () {
@@ -45,8 +47,5 @@ Route::group('soldier', function () {
 
     //排行榜数据
     Route::get('getRanking', 'soldier/PicSoldier/getRanking');
-
-    //获取参与人数
-    Route::get('getJoinNum', 'soldier/PicSoldier/getJoinNum');
 
 })->middleware(app\http\middleware\CheckToken::class);
