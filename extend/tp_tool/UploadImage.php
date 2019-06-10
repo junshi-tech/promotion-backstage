@@ -86,7 +86,7 @@ class UploadImage
         if ($request->file($this->file)) {
             //file方式上传
             $this->sourceImg = $request->file($this->file)->store($this->store);
-        } elseif ($base64 = $request->post($this->file)) {
+        } elseif ($base64 = Request::request($this->file)) {
             //base64编码式上传
             $this->sourceImg = base64_content_image($base64, $this->rootPath . $this->store);
         } else {
@@ -125,11 +125,9 @@ class UploadImage
         $this->save();
         $this->imageName = md5(get_uuid());
         $this->_openImage();
-        $imageName = $this->_saveImage($this->imageName);
+        $new_file = $this->_saveImage($this->imageName);
 
-        $new_file = $this->rootPath . $this->store . '/' . $imageName;
         unlink($this->sourceImg);
-        rename("./" . $imageName, $new_file);
         return substr($new_file, 1);
     }
 
@@ -186,8 +184,9 @@ class UploadImage
             $dstName = $dstImgName . $this->imageinfo['type'];
         }
         $funcs = "image" . $this->imageinfo['type'];
-        $funcs($this->image, $dstName);
-        return $dstName;
+        $new_file = $this->rootPath . $this->store . $dstName;
+        $funcs($this->image, $new_file);
+        return $new_file;
     }
 
     /**

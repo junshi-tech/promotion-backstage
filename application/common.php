@@ -480,7 +480,7 @@ if (!function_exists('base64_content_image')) {
         if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_data, $result)){
             if(!file_exists($path)){
                 //检查是否有该文件夹，如果没有就创建，并给予最高权限
-                mkdir($path, 0700);
+                mkdir($path, 0770, true);
             }
             $new_file = $path.md5(get_uuid()).".{$result[2]}";
             $base64 = str_replace($result[1], '', $base64_data);

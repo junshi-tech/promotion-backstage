@@ -21,11 +21,11 @@ class Upload extends Base
     public function image()
     {
         //测试数据
-        $_POST['image'] = $_POST['image'] ?? base64_encode_image('./static/img/avatar/user42.png');
+        $_REQUEST['image'] = $_POST['image'] ?? base64_encode_image('./static/img/avatar/user42.png');
 
         $upload = new UploadImage();
-        $date = date('Ymd');
-        $this->result['data']['img'] = get_domain().$upload->file('image')->store('img/'.$date.'/')->compress();
+        $date = date('Ym');
+        $this->result['data']['img'] = get_domain().$upload->file('image')->store('img/'.$date. '/')->compress();
 
         return $this->result;
     }
