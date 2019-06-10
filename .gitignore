@@ -7,3 +7,4 @@ redis-persistence/
 .DS_Store
 etc
 usr
+public/upload/
