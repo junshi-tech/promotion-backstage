@@ -35,16 +35,12 @@ Route::get('soldier/getJoinNum', 'soldier/PicSoldier/getJoinNum');
 Route::group('soldier', function () {
     //获取授权用户信息
     Route::get('Wechat/getUserInfo', 'soldier/WeChat/getUserInfo');
-
     //保存军人信息
     Route::post('saveData', 'soldier/PicSoldier/save');
-
     //上传照片
-    Route::post('uploadImg', 'soldier/Upload/image');
-
+    Route::post('addImg', 'soldier/PicSoldier/addImg');
     //保存点赞支持
     Route::post('saveLike', 'soldier/PicSoldier/saveLike');
-
     //排行榜数据
     Route::get('getRanking', 'soldier/PicSoldier/getRanking');
 

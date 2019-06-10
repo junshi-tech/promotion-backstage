@@ -86,7 +86,7 @@ class UploadImage
         if ($request->file($this->file)) {
             //file方式上传
             $this->sourceImg = $request->file($this->file)->store($this->store);
-        } elseif ($base64 = $request->post($this->file)) {
+        } elseif ($base64 = Request::request($this->file)) {
             //base64编码式上传
             $this->sourceImg = base64_content_image($base64, $this->rootPath . $this->store);
         } else {

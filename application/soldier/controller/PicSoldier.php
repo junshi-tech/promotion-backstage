@@ -7,6 +7,8 @@ use app\common\controller\Log;
 use app\soldier\model\PicSoldier as PicSoldierModel;
 use app\soldier\validate\PicSoldier as PicSoldierValidate;
 use think\Db;
+use think\facade\Request;
+use tp_tool\UploadImage;
 
 class PicSoldier extends Base
 {
@@ -48,8 +50,16 @@ class PicSoldier extends Base
         $data['rank_text'] = $rank_item[$data['rank']] ?? '';
         $data['join_date'] = date('Y', strtotime($data['join_time']));
 
-        //点赞列表
+        if (!empty($data['img_url'])) {
+            $data['img_url'] = json_decode($data['img_url']);
+            foreach ($data['img_url'] as $k=>$v) {
+                if($v) {
+                    $data['img_url'][$k] = get_domain().$v;
+                }
+            }
+        }
 
+        //点赞列表
         $list = Db::name('pic_soldier_like')->where('soldier_id', $data['soldier_id'])->field('user_id,remark,create_time')->order('create_time desc')->select();;
         $user_list = Db::name('user')->column('headimgurl,nickname', 'user_id');
         foreach ($list as $k=>$v) {
@@ -72,9 +82,6 @@ class PicSoldier extends Base
         $this->currentValidate->checkData('save');
 
         try {
-            if (!empty($this->data['img_url'])) {
-                $this->data['img_url'] = json_encode($this->data['img_url']);
-            }
             $this->data['user_id'] = $this->user_id;
 
             //如果该用户已生成，则更新
@@ -92,6 +99,68 @@ class PicSoldier extends Base
         }
         $pk = $this->currentModel->getPk();
         $this->result['data']['soldier_id'] = $this->currentModel->getData($pk);
+        return $this->result;
+    }
+
+    /**
+     * 上传图片
+     * @param $soldier_id
+     * @return array
+     * @throws \think\Exception
+     */
+    public function addImg($soldier_id)
+    {
+        //测试数据
+//        $_REQUEST['image_base64'] = $_POST['image_base64'] ?? base64_encode_image('./static/img/avatar/user42.png');
+        if (empty(Request::post('image_base64'))) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '图片数据不能为空！';
+            return $this->result;
+        }
+
+        //上传
+        $upload = new UploadImage();
+        $date = date('Ym');
+        $img_url = $upload->file('image_base64')->store('img/'.$date. '/')->compress();
+
+        //更新数据
+        $data_img = Db::name('pic_soldier')->where('id', $soldier_id)->value('img_url');
+        $data_img = array_push(json_decode($data_img, true), $img_url);
+        Db::name('pic_soldier')->where('id', $soldier_id)->update(['img_url'=> json_encode($data_img)]);
+
+        //返回数据
+        $this->result['data']['img'] = get_domain().$img_url;
+        return $this->result;
+    }
+
+    /**
+     * 删除图片
+     * @param $soldier_id
+     * @return array
+     * @throws \think\Exception
+     */
+    public function delImg($soldier_id)
+    {
+        //验证数据
+        if (empty($this->data['img_url'])) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '图片路径不能为空！';
+            return $this->result;
+        }
+
+        //更新数据
+        $data_img = Db::name('pic_soldier')->where('id', $soldier_id)->value('img_url');
+        $data_img = json_decode($data_img, true);
+        foreach ($data_img as $k=>$v) {
+            if ($v === $this->data['img_url']) {
+                unset($data_img[$k]);
+            }
+        }
+        $data_img = json_encode($data_img);
+        Db::name('pic_soldier')->where('id', $soldier_id)->update(['img_url'=> $data_img]);
+
+        //删除文件
+        delete_file($this->data['img_url']);
         return $this->result;
     }
 

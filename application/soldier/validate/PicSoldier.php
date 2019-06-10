@@ -33,7 +33,7 @@ class PicSoldier extends Base
 
     /*字段规则*/
     protected $scene = [
-        'save' => ['user_id','username','phone','join_time','rank','type','img_url']
+        'save' => ['user_id','username','phone','join_time','rank','type']
     ];
 
 }
