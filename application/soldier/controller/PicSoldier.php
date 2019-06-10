@@ -246,6 +246,4 @@ class PicSoldier extends Base
         return $this->result;
     }
 
-
-
 }

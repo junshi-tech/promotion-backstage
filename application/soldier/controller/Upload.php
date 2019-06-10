@@ -30,6 +30,4 @@ class Upload extends Base
         return $this->result;
     }
 
-
-
 }

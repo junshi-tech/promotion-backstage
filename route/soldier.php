@@ -45,5 +45,4 @@ Route::group('soldier', function () {
     Route::post('saveLike', 'soldier/PicSoldier/saveLike');
     //排行榜数据
     Route::get('getRanking', 'soldier/PicSoldier/getRanking');
-
 })->middleware(app\http\middleware\CheckToken::class);
