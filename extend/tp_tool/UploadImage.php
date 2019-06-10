@@ -125,11 +125,9 @@ class UploadImage
         $this->save();
         $this->imageName = md5(get_uuid());
         $this->_openImage();
-        $imageName = $this->_saveImage($this->imageName);
+        $new_file = $this->_saveImage($this->imageName);
 
-        $new_file = $this->rootPath . $this->store . '/' . $imageName;
         unlink($this->sourceImg);
-        rename("./" . $imageName, $new_file);
         return substr($new_file, 1);
     }
 
@@ -186,8 +184,9 @@ class UploadImage
             $dstName = $dstImgName . $this->imageinfo['type'];
         }
         $funcs = "image" . $this->imageinfo['type'];
-        $funcs($this->image, $dstName);
-        return $dstName;
+        $new_file = $this->rootPath . $this->store . $dstName;
+        $funcs($this->image, $new_file);
+        return $new_file;
     }
 
     /**
