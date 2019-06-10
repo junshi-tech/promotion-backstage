@@ -35,5 +35,4 @@ class PicSoldier extends Base
     protected $scene = [
         'save' => ['user_id','username','phone','join_time','rank','type']
     ];
-
 }

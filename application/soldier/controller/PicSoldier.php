@@ -1,6 +1,4 @@
 <?php
-
-
 namespace app\soldier\controller;
 
 use app\common\controller\Log;
@@ -245,7 +243,4 @@ class PicSoldier extends Base
         $this->result['data'] = $soldier_like;
         return $this->result;
     }
-
-
-
 }
