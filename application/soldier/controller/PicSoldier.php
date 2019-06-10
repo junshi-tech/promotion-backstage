@@ -31,7 +31,7 @@ class PicSoldier extends Base
     public function getData($soldier_id)
     {
 
-        $data = $this->currentModel->where('id', $soldier_id)->field('id as soldier_id,user_id,type,username,join_time,rank')->find();
+        $data = $this->currentModel->where('id', $soldier_id)->field('id as soldier_id,user_id,type,username,join_time,rank,img_url')->find();
         if ($data) {
             $data = $data->toArray();
         } else {
@@ -118,6 +118,13 @@ class PicSoldier extends Base
             return $this->result;
         }
 
+        $count = Db::name('pic_soldier')->where('id', $soldier_id)->count();
+        if ($count == 0) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '该参数查找不到军人信息！';
+            return $this->result;
+        }
+
         //上传
         $upload = new UploadImage();
         $date = date('Ym');
@@ -125,7 +132,14 @@ class PicSoldier extends Base
 
         //更新数据
         $data_img = Db::name('pic_soldier')->where('id', $soldier_id)->value('img_url');
-        $data_img = array_push(json_decode($data_img, true), $img_url);
+        if ($data_img) {
+            $data_img = json_decode($data_img, true);
+            array_push($data_img, $img_url);
+        } else {
+            $data_img = [];
+            $data_img[] = $img_url;
+        }
+
         Db::name('pic_soldier')->where('id', $soldier_id)->update(['img_url'=> json_encode($data_img)]);
 
         //返回数据
@@ -152,7 +166,7 @@ class PicSoldier extends Base
         $data_img = Db::name('pic_soldier')->where('id', $soldier_id)->value('img_url');
         $data_img = json_decode($data_img, true);
         foreach ($data_img as $k=>$v) {
-            if ($v === $this->data['img_url']) {
+            if (get_domain().$v === $this->data['img_url']) {
                 unset($data_img[$k]);
             }
         }

@@ -39,6 +39,8 @@ Route::group('soldier', function () {
     Route::post('saveData', 'soldier/PicSoldier/save');
     //上传照片
     Route::post('addImg', 'soldier/PicSoldier/addImg');
+    //删除照片
+    Route::post('delImg', 'soldier/PicSoldier/delImg');
     //保存点赞支持
     Route::post('saveLike', 'soldier/PicSoldier/saveLike');
     //排行榜数据
