@@ -1,4 +1,6 @@
 <?php
+
+
 namespace app\soldier\controller;
 
 use app\common\controller\Log;
@@ -49,12 +51,14 @@ class PicSoldier extends Base
         $data['join_date'] = date('Y', strtotime($data['join_time']));
 
         if (!empty($data['img_url'])) {
-            $data['img_url'] = json_decode($data['img_url']);
+            $data['img_url'] = json_decode($data['img_url'], true);
             foreach ($data['img_url'] as $k=>$v) {
                 if($v) {
                     $data['img_url'][$k] = get_domain().$v;
                 }
             }
+            krsort($data['img_url']);
+            $data['img_url'] = array_values($data['img_url']);
         }
 
         //点赞列表
@@ -116,10 +120,15 @@ class PicSoldier extends Base
             return $this->result;
         }
 
-        $count = Db::name('pic_soldier')->where('id', $soldier_id)->count();
-        if ($count == 0) {
+        $user_id = Db::name('pic_soldier')->where('id', $soldier_id)->value('user_id');
+        if (!$user_id) {
             $this->result['code'] = 0;
             $this->result['msg'] = '该参数查找不到军人信息！';
+            return $this->result;
+        }
+        if ($user_id !== $this->user_id) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '您不是所有者，无权操作！';
             return $this->result;
         }
 
@@ -161,8 +170,19 @@ class PicSoldier extends Base
         }
 
         //更新数据
-        $data_img = Db::name('pic_soldier')->where('id', $soldier_id)->value('img_url');
-        $data_img = json_decode($data_img, true);
+        $data = Db::name('pic_soldier')->where('id', $soldier_id)->field('user_id,img_url')->find();
+        if (!$data) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '该参数查找不到军人信息！';
+            return $this->result;
+        }
+        if ($data['user_id'] !== $this->user_id) {
+            $this->result['code'] = 0;
+            $this->result['msg'] = '您不是所有者，无权操作！';
+            return $this->result;
+        }
+
+        $data_img = json_decode($data['img_url'], true);
         foreach ($data_img as $k=>$v) {
             if (get_domain().$v === $this->data['img_url']) {
                 unset($data_img[$k]);
@@ -243,4 +263,5 @@ class PicSoldier extends Base
         $this->result['data'] = $soldier_like;
         return $this->result;
     }
+
 }

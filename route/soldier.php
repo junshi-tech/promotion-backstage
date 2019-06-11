@@ -18,18 +18,23 @@ Route::any('/', function () {
     return 'hello,world!';
 });
 
-//公众号授权登录
-Route::any('soldier/Wechat/Login', 'soldier/WeChat/oauth');
-//微信登录回调地址
-Route::any('soldier/Wechat/OauthCallback', 'soldier/WeChat/oauthCallback');
-//微信服务器响应
-Route::any('soldier/Wechat/Server', 'soldier/WeChat/server');
-//获取测试token
-Route::any('soldier/Wechat/getTestToken', 'soldier/WeChat/getTestToken');
-//获取军人信息
-Route::get('soldier/getData', 'soldier/PicSoldier/getData');
-//获取参与人数
-Route::get('soldier/getJoinNum', 'soldier/PicSoldier/getJoinNum');
+/*不需要登录鉴权的接口*/
+Route::group('soldier', function () {
+    //公众号授权登录
+    Route::any('Wechat/Login', 'soldier/WeChat/oauth');
+    //微信登录回调地址
+    Route::any('Wechat/OauthCallback', 'soldier/WeChat/oauthCallback');
+    //微信服务器响应
+    Route::any('Wechat/Server', 'soldier/WeChat/server');
+    //获取测试token
+    Route::any('Wechat/getTestToken', 'soldier/WeChat/getTestToken');
+    //获取分享配置
+    Route::get('Wechat/getShareConfig', 'soldier/WeChat/getShareConfig');
+    //获取军人信息
+    Route::get('getData', 'soldier/PicSoldier/getData');
+    //获取参与人数
+    Route::get('getJoinNum', 'soldier/PicSoldier/getJoinNum');
+});
 
 /*需要登录鉴权的接口*/
 Route::group('soldier', function () {
