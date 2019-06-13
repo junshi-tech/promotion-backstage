@@ -135,17 +135,13 @@ class WeChat extends Base
     {
         $api_list = [
             'updateAppMessageShareData',
-            'updateTimelineShareData',
-            'onMenuShareTimeline',
-            'onMenuShareAppMessage',
-            'onMenuShareQQ',
-            'onMenuShareQZone'
+            'updateTimelineShareData'
         ];
 
         //设置分享链接
         $this->easyWechat->jssdk->setUrl($url);
         //获取分享配置
-        $jsConfig = $this->easyWechat->jssdk->buildConfig($api_list, false);
+        $jsConfig = $this->easyWechat->jssdk->buildConfig($api_list, true);
         return ['code'=>1, 'msg'=>'获取成功！', 'data'=>json_decode($jsConfig)];
     }
 
