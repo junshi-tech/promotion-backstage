@@ -19,7 +19,7 @@ Route::any('/', function () {
 });
 
 /*不需要登录鉴权的接口*/
-Route::group('soldier', function () {
+Route::group('api', function () {
     //公众号授权登录
     Route::any('Wechat/Login', 'soldier/WeChat/oauth');
     //微信登录回调地址
@@ -37,7 +37,7 @@ Route::group('soldier', function () {
 });
 
 /*需要登录鉴权的接口*/
-Route::group('soldier', function () {
+Route::group('api', function () {
     //获取授权用户信息
     Route::get('Wechat/getUserInfo', 'soldier/WeChat/getUserInfo');
     //保存军人信息

@@ -5,7 +5,7 @@ services:
     container_name: js_web
     image: bitnami/nginx:latest
     ports:
-      - 80:8080
+      - 8080:8080
     volumes:
       - ./container/nginx-vhost/myapp.conf:/bitnami/nginx/conf/vhosts/myapp.conf
       - .:/app
