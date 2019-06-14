@@ -9,6 +9,7 @@
 
 namespace tp_wechat;
 
+use app\common\controller\Log;
 use EasyWeChat\Factory;
 use think\facade\Config;
 use think\facade\Request;
@@ -46,6 +47,7 @@ class EasyWeChat
             $config = Config::get('wechat.official_account_test.default');
         }
 
+        (new Log())->saveErrorLog('测试initConfig');
         $back_url = Request::param('back_url');
         if (!empty($back_url)) {
             $config['oauth']['callback'] .= '?back_url='.urlencode($back_url);

@@ -51,7 +51,7 @@ return [
              */
             'oauth' => [
                 'scopes' => ['snsapi_userinfo'],
-                'callback' => 'soldier/Wechat/oauthCallback',
+                'callback' => 'api/Wechat/oauthCallback',
             ],
         ],
     ],
@@ -75,7 +75,7 @@ return [
              */
             'oauth' => [
                 'scopes' => ['snsapi_base'],
-                'callback' => 'soldier/Wechat/oauthCallback',
+                'callback' => 'api/Wechat/oauthCallback',
             ],
         ],
     ],

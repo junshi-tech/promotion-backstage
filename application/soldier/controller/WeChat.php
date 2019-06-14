@@ -141,7 +141,7 @@ class WeChat extends Base
         //设置分享链接
         $this->easyWechat->jssdk->setUrl($url);
         //获取分享配置
-        $jsConfig = $this->easyWechat->jssdk->buildConfig($api_list, true);
+        $jsConfig = $this->easyWechat->jssdk->buildConfig($api_list, false);
         return ['code'=>1, 'msg'=>'获取成功！', 'data'=>json_decode($jsConfig)];
     }
 

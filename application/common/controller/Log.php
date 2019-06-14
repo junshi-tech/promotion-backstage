@@ -105,22 +105,20 @@ class Log
 
     /**
      * 保存错误日志
-     * @param $content
+     * @param string $content
+     * @return bool
      */
     public function saveErrorLog($content = '')
     {
-        try{
-            $data['user_id'] = get_uid() ?? 0;
-            $data['url'] =  Request::url(true);
-            $data['method'] = Request::method();
-            $data['content'] = $content;
-            $data['create_time'] = date('Y-m-d H:i:s');
-            $content = json_encode($data, JSON_UNESCAPED_UNICODE);//json格式，保留中文
-            Db::name('log_error')->insert($data);
-        }
-        catch (\Exception $e) {
-            Db::name('log_error')->insert(['content' => '本表信息保存失败：'.$e->getMessage().'; '.$content, 'create_time'=>date('Y-m-d H:i:s')]);
-        }
+        $data = [];
+        $data['user_id'] = get_uid() ?? 0;
+        $data['url'] =  Request::url(true);
+        $data['method'] = Request::method();
+        $data['params'] = json_encode(Request::param(), JSON_UNESCAPED_UNICODE);
+        $data['content'] = $content;
+        $data['create_time'] = date('Y-m-d H:i:s');
+        Db::name('log_error')->insertGetId($data);
+        return true;
     }
 
     /**
